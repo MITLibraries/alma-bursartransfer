@@ -4,7 +4,7 @@ A template repository for creating Python lambda functions.
 
 ## Repo setup (delete this section and above after initial function setup)
 
-1. Rename "my_function" to the desired initial function name across the repo. (May be helpful to do a project-wide find-and-replace).
+1. Rename "bursar_transfer" to the desired initial function name across the repo. (May be helpful to do a project-wide find-and-replace).
 2. Update Python version if needed (note: AWS lambda cannot currently support versions higher than 3.9).
 3. Install all dependencies with `make install`  to create initial Pipfile.lock with latest dependency versions.
 4. Add initial function description to README and update initial required ENV variable documentation as needed.
@@ -18,9 +18,9 @@ A template repository for creating Python lambda functions.
 7. Create a Sentry project for the app if needed (we want this for most apps):
    - Send initial exceptions to Sentry project for dev, stage, and prod environments to create them.
    - Create an alert for the prod environment only, with notifications sent to the appropriate team(s).
-   - If *not* using Sentry, delete Sentry configuration from my_function.py and test_my_function_.py, and remove sentry_sdk from project dependencies.
+   - If *not* using Sentry, delete Sentry configuration from bursar_transfer.py and test_bursar_transfer_.py, and remove sentry_sdk from project dependencies.
 
-# my_function
+# bursar_transfer
 
 Description of the function/functions.
 
@@ -43,13 +43,13 @@ Description of the function/functions.
 - Build the container:
 
   ```bash
-  docker build -t my_function:latest .
+  docker build -t bursar_transfer:latest .
   ```
 
 - Run the default handler for the container:
 
   ```bash
-  docker run -e WORKSPACE=dev -p 9000:8080 my_function:latest
+  docker run -e WORKSPACE=dev -p 9000:8080 bursar_transfer:latest
   ```
 
 - Post to the container:
@@ -69,5 +69,5 @@ Description of the function/functions.
 If this repo contains multiple lambda functions, you can call any handler you copy into the container (see Dockerfile) by name as part of the `docker run` command:
 
 ```bash
-docker run -p 9000:8080 my_function:latest lambdas.<a-different-module>.lambda_handler
+docker run -p 9000:8080 bursar_transfer:latest lambdas.<a-different-module>.lambda_handler
 ```
