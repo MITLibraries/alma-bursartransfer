@@ -29,7 +29,7 @@ else:
     logger.info("No Sentry DSN found, exceptions will not be sent to Sentry")
 
 
-def get_xml(s3_client: S3Client, bucket: str, key: str) -> str:
+def get_bursar_export_xml_from_s3(s3_client: S3Client, bucket: str, key: str) -> str:
     """Get an object bytes data from s3 and return as a utf-8 encoded string."""
     response = s3_client.get_object(Bucket=bucket, Key=key)
     return response["Body"].read().decode("utf-8")
@@ -127,7 +127,7 @@ def lambda_handler(event: dict, context: object) -> None:  # noqa
     key = event["Records"][0]["s3"]["object"]["key"]
 
     # Get the XML from s3
-    alma_xml = get_xml(s3_client, bucket, key)
+    alma_xml = get_bursar_export_xml_from_s3(s3_client, bucket, key)
 
     # Convert the xml to csv
     bursar_csv = xml_to_csv(alma_xml)
@@ -139,3 +139,7 @@ def lambda_handler(event: dict, context: object) -> None:  # noqa
         key.replace(".xml", ".csv"),
         bursar_csv,
     )
+    csv_location = (
+        f"{os.environ['BURSAR_S3_EXTRACT_BUCKET_ID']}/{key.replace('.xml', '.csv')}"
+    )
+    logger.info(f"bursar csv available for download at {csv_location}")
