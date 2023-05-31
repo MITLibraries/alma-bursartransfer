@@ -75,7 +75,7 @@ def s3_event():
                         "arn": "arn:aws:s3:::sourcebucket",
                     },
                     "object": {
-                        "key": "exlibris/bursar/text.xml",
+                        "key": "exlibris/bursar/test.xml",
                         "size": 1024,
                         "eTag": "d41d8cd98f00b204e9800998ecf8427e",
                         "versionId": "096fKKXTRTtl3on89fVO.nfljtsv6qko",
