@@ -142,4 +142,4 @@ def lambda_handler(event: dict, context: object) -> None:  # noqa
     csv_location = (
         f"{os.environ['BURSAR_S3_EXTRACT_BUCKET_ID']}/{key.replace('.xml', '.csv')}"
     )
-    logger.info(f"bursar csv available for download at {csv_location}")
+    logger.info("bursar csv available for download at %s", csv_location)

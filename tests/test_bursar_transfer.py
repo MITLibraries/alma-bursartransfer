@@ -54,7 +54,7 @@ def test_xml_to_csv_error_if_missing_field(test_xml: str) -> None:
 
 
 def test_xml_to_csv(test_xml: str) -> None:
-    with open("tests/fixtures/test.csv", encoding=("utf-8")) as file:
+    with open("tests/fixtures/test.csv", encoding="utf-8") as file:
         expected_file = file.read()
         assert bursar_transfer.xml_to_csv(test_xml) == expected_file
 
