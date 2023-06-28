@@ -8,8 +8,7 @@ from moto import mock_s3
 @pytest.fixture(autouse=True)
 def test_env():
     os.environ = {
-        "BURSAR_ALMA_EXPORT_BUCKET_ID": "test-alma-bucket",
-        "BURSAR_S3_EXTRACT_BUCKET_ID": "test-bursar-bucket",
+        "ALMA_BURSAR_PICKUP_BUCKET_ID": "test-pickup-bucket",
         "WORKSPACE": "test",
     }
 
@@ -18,7 +17,7 @@ def test_env():
 def mocked_s3():
     with mock_s3():
         client = boto3.client("s3", region_name="us-east-1")
-        client.create_bucket(Bucket="test-bursar-bucket")
+        client.create_bucket(Bucket="test-pickup-bucket")
         client.create_bucket(Bucket="test-alma-bucket")
         with open(
             "tests/fixtures/test.xml",
