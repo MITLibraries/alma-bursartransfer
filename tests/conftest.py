@@ -8,11 +8,6 @@ from moto import mock_s3
 @pytest.fixture(autouse=True)
 def test_env():
     os.environ = {
-        "AWS_ACCESS_KEY_ID": "testing",
-        "AWS_DEFAULT_REGION": "us-east-1",
-        "AWS_SECRET_ACCESS_KEY": "testing",
-        "AWS_SECURITY_TOKEN": "testing",
-        "AWS_SESSION_TOKEN": "testing",
         "BURSAR_ALMA_EXPORT_BUCKET_ID": "test-alma-bucket",
         "BURSAR_S3_EXTRACT_BUCKET_ID": "test-bursar-bucket",
         "WORKSPACE": "test",
