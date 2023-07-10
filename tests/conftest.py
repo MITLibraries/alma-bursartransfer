@@ -6,6 +6,14 @@ from moto import mock_s3
 
 
 @pytest.fixture(autouse=True)
+def aws_credentials():
+    os.environ["AWS_ACCESS_KEY_ID"] = "testing"
+    os.environ["AWS_SECRET_ACCESS_KEY"] = "testing"
+    os.environ["AWS_SECURITY_TOKEN"] = "testing"
+    os.environ["AWS_SESSION_TOKEN"] = "testing"
+
+
+@pytest.fixture(autouse=True)
 def test_env():
     os.environ = {
         "ALMA_BURSAR_PICKUP_BUCKET_ID": "test-pickup-bucket",
