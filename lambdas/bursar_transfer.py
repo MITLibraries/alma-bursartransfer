@@ -130,16 +130,16 @@ def lambda_handler(event: dict, context: object) -> None:  # noqa
     alma_xml = get_bursar_export_xml_from_s3(s3_client, bucket, key)
 
     # Convert the xml to csv
-    bursar_csv = xml_to_csv(alma_xml)
+    bursar_csv = xml_to_csv(alma_xml, TODAY)
 
     # upload csv
     put_csv(
         s3_client,
-        os.environ["BURSAR_S3_EXTRACT_BUCKET_ID"],
+        os.environ["ALMA_BURSAR_PICKUP_BUCKET_ID"],
         key.replace(".xml", ".csv"),
         bursar_csv,
     )
     csv_location = (
-        f"{os.environ['BURSAR_S3_EXTRACT_BUCKET_ID']}/{key.replace('.xml', '.csv')}"
+        f"{os.environ['ALMA_BURSAR_PICKUP_BUCKET_ID']}/{key.replace('.xml', '.csv')}"
     )
     logger.info("bursar csv available for download at %s", csv_location)

@@ -64,13 +64,13 @@ def test_put_csv(mocked_s3) -> None:
         csv_file = file.read()
     bursar_transfer.put_csv(
         mocked_s3,
-        bucket="test-bursar-bucket",
+        bucket="test-pickup-bucket",
         key="exlibris/bursar/foo.csv",
         csv_file=csv_file,
     )
 
     retrieved_file = mocked_s3.get_object(
-        Bucket="test-bursar-bucket", Key="exlibris/bursar/foo.csv"
+        Bucket="test-pickup-bucket", Key="exlibris/bursar/foo.csv"
     )
     assert (
         retrieved_file["ResponseMetadata"]["HTTPHeaders"]["content-type"] == "text/csv"
@@ -87,4 +87,4 @@ def test_lambda_handler_missing_workspace_env_raises_error(monkeypatch) -> None:
 
 def test_lambda_handler_success(s3_event, caplog) -> None:
     bursar_transfer.lambda_handler(s3_event, {})
-    assert "test-bursar-bucket/exlibris/bursar/test.csv" in caplog.text
+    assert "test-pickup-bucket/exlibris/bursar/test.csv" in caplog.text
