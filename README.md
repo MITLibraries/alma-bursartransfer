@@ -43,11 +43,3 @@ bursar's system.
   ```
   "You have successfully called this lambda!"
   ```
-
-## Running a different handler in the container
-
-If this repo contains multiple lambda functions, you can call any handler you copy into the container (see Dockerfile) by name as part of the `docker run` command:
-
-```bash
-docker run -p 9000:8080 bursar_transfer:latest lambdas.<a-different-module>.lambda_handler
-```
