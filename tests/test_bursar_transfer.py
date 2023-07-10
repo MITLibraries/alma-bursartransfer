@@ -49,14 +49,16 @@ def test_billing_term(test_date, expected) -> None:
 
 def test_xml_to_csv_error_if_missing_field(test_xml: str) -> None:
     xml_missing_amount = test_xml.replace("123.45", "")
+    today = date(2023, 3, 1)
     with pytest.raises(ValueError):
-        bursar_transfer.xml_to_csv(xml_missing_amount)
+        bursar_transfer.xml_to_csv(xml_missing_amount, today)
 
 
 def test_xml_to_csv(test_xml: str) -> None:
     with open("tests/fixtures/test.csv", encoding="utf-8") as file:
         expected_file = file.read()
-        assert bursar_transfer.xml_to_csv(test_xml) == expected_file
+        today = date(2023, 3, 1)
+        assert bursar_transfer.xml_to_csv(test_xml, today) == expected_file
 
 
 def test_put_csv(mocked_s3) -> None:

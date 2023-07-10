@@ -13,6 +13,7 @@ from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+TODAY = date.today()
 
 env = os.getenv("WORKSPACE")
 if sentry_dsn := os.getenv("SENTRY_DSN"):
@@ -53,13 +54,11 @@ def billing_term(today: date) -> str:
     return f"{term_year}{term_code}"
 
 
-def xml_to_csv(alma_xml: str) -> str:
+def xml_to_csv(alma_xml: str, today: date) -> str:
     """Convert xml from the alma bursar export to a csv.
 
     see jira XXXXX for details on bursar's specifications and library business rules.
     """
-    today = date.today()
-
     csv_file = StringIO()
     csv_fieldnames = [
         "MITID",
