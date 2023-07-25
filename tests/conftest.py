@@ -16,7 +16,8 @@ def aws_credentials():
 @pytest.fixture(autouse=True)
 def test_env():
     os.environ = {
-        "ALMA_BURSAR_PICKUP_BUCKET_ID": "test-pickup-bucket",
+        "ALMA_BUCKET": "test-alma-bucket",
+        "TARGET_BUCKET": "test-pickup-bucket",
         "WORKSPACE": "test",
     }
 
@@ -52,38 +53,6 @@ def test_xml() -> str:
 
 
 @pytest.fixture()
-def s3_event():
-    event = {
-        "Records": [
-            {
-                "eventVersion": "2.0",
-                "eventSource": "aws:s3",
-                "awsRegion": "us-east-1",
-                "eventTime": "1970-01-01T00:00:00.000Z",
-                "eventName": "ObjectCreated:Put",
-                "userIdentity": {"principalId": "AIDAJDPLRKLG7UEXAMPLE"},
-                "requestParameters": {"sourceIPAddress": "127.0.0.1"},
-                "responseElements": {
-                    "x-amz-request-id": "C3D13FE58DE4C810",
-                    "x-amz-id-2": "FMyUVURIY8/IgAtTv8xRjskZQpcI"
-                    "Z9KG4V5Wp6S7S/JRWeUWerMUE5JgHvANOjpD",
-                },
-                "s3": {
-                    "s3SchemaVersion": "1.0",
-                    "configurationId": "testConfigRule",
-                    "bucket": {
-                        "name": "test-alma-bucket",
-                        "ownerIdentity": {"principalId": "A3NL1KOZZKExample"},
-                        "arn": "arn:aws:s3:::sourcebucket",
-                    },
-                    "object": {
-                        "key": "exlibris/bursar/test.xml",
-                        "size": 1024,
-                        "eTag": "d41d8cd98f00b204e9800998ecf8427e",
-                        "versionId": "096fKKXTRTtl3on89fVO.nfljtsv6qko",
-                    },
-                },
-            }
-        ]
-    }
+def event_data():
+    event = {"key": "exlibris/bursar/test.xml"}
     return event

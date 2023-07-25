@@ -14,7 +14,8 @@ bursar's system.
 
 - `SENTRY_DSN` = If set to a valid Sentry DSN, enables Sentry exception monitoring. This is not needed for local development.
 - `WORKSPACE` = Set to `dev` for local development, this will be set to `stage` and `prod` in those environments by Terraform.
-- `ALMA_BURSAR_PICKUP_BUCKET_ID` = An s3 bucket where the transformed file will be deposited. 
+- `ALMA_BUCKET` = The bucket containing the fine and fee data exported from Alma.
+- `TARGET_BUCKET` = The bucket where the transformed file will be deposited. 
 
 ## Running locally
 

@@ -30,8 +30,9 @@ else:
     logger.info("No Sentry DSN found, exceptions will not be sent to Sentry")
 
 
-def get_bursar_export_xml_from_s3(s3_client: S3Client, bucket: str, key: str) -> str:
+def get_bursar_export_xml_from_s3(s3_client: S3Client, key: str) -> str:
     """Get an object bytes data from s3 and return as a utf-8 encoded string."""
+    bucket = os.environ["ALMA_BUCKET"]
     response = s3_client.get_object(Bucket=bucket, Key=key)
     return response["Body"].read().decode("utf-8")
 
@@ -122,11 +123,10 @@ def lambda_handler(event: dict, context: object) -> None:  # noqa
     s3_client = boto3.client("s3")
 
     # Get the object from the event and show its content type
-    bucket = event["Records"][0]["s3"]["bucket"]["name"]
-    key = event["Records"][0]["s3"]["object"]["key"]
+    key = event["key"]
 
     # Get the XML from s3
-    alma_xml = get_bursar_export_xml_from_s3(s3_client, bucket, key)
+    alma_xml = get_bursar_export_xml_from_s3(s3_client, key)
 
     # Convert the xml to csv
     bursar_csv = xml_to_csv(alma_xml, TODAY)
@@ -134,11 +134,9 @@ def lambda_handler(event: dict, context: object) -> None:  # noqa
     # upload csv
     put_csv(
         s3_client,
-        os.environ["ALMA_BURSAR_PICKUP_BUCKET_ID"],
+        os.environ["TARGET_BUCKET"],
         key.replace(".xml", ".csv"),
         bursar_csv,
     )
-    csv_location = (
-        f"{os.environ['ALMA_BURSAR_PICKUP_BUCKET_ID']}/{key.replace('.xml', '.csv')}"
-    )
+    csv_location = f"{os.environ['TARGET_BUCKET']}/{key.replace('.xml', '.csv')}"
     logger.info("bursar csv available for download at %s", csv_location)
