@@ -11,7 +11,7 @@ from mypy_boto3_s3 import S3Client
 from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 
 TODAY = date.today()
 
