@@ -1,4 +1,4 @@
-# bursar_transfer
+# Alma Bursar Transfer
 
 Transforms fine and fee data exported from Alma to the correct format to be uploaded to the
 bursar's system.
