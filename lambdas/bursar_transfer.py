@@ -145,3 +145,4 @@ def lambda_handler(event: dict, context: object) -> dict:  # noqa
         f"{target_key.replace('.xml', '.csv')}"
     )
     logger.info("bursar csv available for download at %s", csv_location)
+    return {"target_file": csv_location}

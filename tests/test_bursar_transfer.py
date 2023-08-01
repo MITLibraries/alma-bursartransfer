@@ -99,3 +99,4 @@ def test_lambda_handler_success(event_data, caplog) -> None:
     csv_location = "test-pickup-bucket/exlibris/bursar/test.csv"
     response = bursar_transfer.lambda_handler(event_data, {})
     assert f"bursar csv available for download at {csv_location}" in caplog.text
+    assert response == {"target_file": csv_location}
