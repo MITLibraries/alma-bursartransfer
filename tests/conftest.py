@@ -16,9 +16,11 @@ def aws_credentials():
 @pytest.fixture(autouse=True)
 def test_env():
     os.environ = {
-        "ALMA_BUCKET": "test-alma-bucket",
-        "TARGET_BUCKET": "test-pickup-bucket",
+        "ALMA_BURSAR_SOURCE_BUCKET": "test-alma-bucket",
+        "ALMA_BURSAR_TARGET_BUCKET": "test-pickup-bucket",
         "WORKSPACE": "test",
+        "ALMA_BURSAR_SOURCE_PREFIX": "exlibris/bursar/",
+        "ALMA_BURSAR_TARGET_PREFIX": "exlibris/bursar/",
     }
 
 
@@ -54,5 +56,5 @@ def test_xml() -> str:
 
 @pytest.fixture()
 def event_data():
-    event = {"key": "exlibris/bursar/test.xml"}
+    event = {"key": "test.xml"}
     return event

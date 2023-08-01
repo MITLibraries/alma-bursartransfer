@@ -28,7 +28,7 @@ def test_get_bursar_export_xml_from_s3(mocked_s3) -> None:
         xml_file = file.read()
     assert (
         bursar_transfer.get_bursar_export_xml_from_s3(
-            mocked_s3, key="exlibris/bursar/test.xml"
+            mocked_s3, bucket="test-alma-bucket", key="exlibris/bursar/test.xml"
         )
         == xml_file
     )
@@ -96,5 +96,6 @@ def test_lambda_handler_missing_workspace_env_raises_error(monkeypatch) -> None:
 
 
 def test_lambda_handler_success(event_data, caplog) -> None:
-    bursar_transfer.lambda_handler(event_data, {})
-    assert "test-pickup-bucket/exlibris/bursar/test.csv" in caplog.text
+    csv_location = "test-pickup-bucket/exlibris/bursar/test.csv"
+    response = bursar_transfer.lambda_handler(event_data, {})
+    assert f"bursar csv available for download at {csv_location}" in caplog.text

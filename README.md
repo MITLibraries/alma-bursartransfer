@@ -12,10 +12,16 @@ bursar's system.
 
 ## Required ENV
 
-- `SENTRY_DSN` = If set to a valid Sentry DSN, enables Sentry exception monitoring. This is not needed for local development.
+- `ALMA_BURSAR_SOURCE_BUCKET` = The bucket containing the fine and fee data exported from Alma.
+- `ALMA_BURSAR_SOURCE_PREFIX` = prefix of the source object key within the source bucket.
+- `ALMA_BURSAR_TARGET_PREFIX` = prefix of the target object key within target bucket.
+- `ALMA_BURSAR_TARGET_BUCKET` = The bucket where the transformed object will be deposited. 
 - `WORKSPACE` = Set to `dev` for local development, this will be set to `stage` and `prod` in those environments by Terraform.
-- `ALMA_BUCKET` = The bucket containing the fine and fee data exported from Alma.
-- `TARGET_BUCKET` = The bucket where the transformed file will be deposited. 
+
+## Optional ENV
+
+- `SENTRY_DSN` = If set to a valid Sentry DSN, enables Sentry exception monitoring. This is not needed for local development.
+- `LOG_LEVEL` = Set to a valid Python logging level (e.g. DEBUG, case-insensitive) if desired. Can also be passed as an option directly to the ccslips command. Defaults to INFO if not set or passed to the command.
 
 ## Mapping from Alma to SFS
 

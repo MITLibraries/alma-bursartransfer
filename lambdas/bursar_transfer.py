@@ -30,9 +30,8 @@ else:
     logger.info("No Sentry DSN found, exceptions will not be sent to Sentry")
 
 
-def get_bursar_export_xml_from_s3(s3_client: S3Client, key: str) -> str:
+def get_bursar_export_xml_from_s3(s3_client: S3Client, bucket: str, key: str) -> str:
     """Get an object bytes data from s3 and return as a utf-8 encoded string."""
-    bucket = os.environ["ALMA_BUCKET"]
     response = s3_client.get_object(Bucket=bucket, Key=key)
     return response["Body"].read().decode("utf-8")
 
@@ -115,18 +114,21 @@ def put_csv(s3_client: S3Client, bucket: str, key: str, csv_file: str) -> None:
     )
 
 
-def lambda_handler(event: dict, context: object) -> None:  # noqa
+def lambda_handler(event: dict, context: object) -> dict:  # noqa
     if not os.getenv("WORKSPACE"):
         raise RuntimeError("Required env variable WORKSPACE is not set")
 
     # Create boto3 client
     s3_client = boto3.client("s3")
-
-    # Get the object from the event and show its content type
     key = event["key"]
 
+    source_key = f"{os.environ['ALMA_BURSAR_SOURCE_PREFIX']}{key}"
+    target_key = f"{os.environ['ALMA_BURSAR_TARGET_PREFIX']}{key}"
+
     # Get the XML from s3
-    alma_xml = get_bursar_export_xml_from_s3(s3_client, key)
+    alma_xml = get_bursar_export_xml_from_s3(
+        s3_client, os.environ["ALMA_BURSAR_SOURCE_BUCKET"], source_key
+    )
 
     # Convert the xml to csv
     bursar_csv = xml_to_csv(alma_xml, TODAY)
@@ -134,9 +136,12 @@ def lambda_handler(event: dict, context: object) -> None:  # noqa
     # upload csv
     put_csv(
         s3_client,
-        os.environ["TARGET_BUCKET"],
-        key.replace(".xml", ".csv"),
+        os.environ["ALMA_BURSAR_TARGET_BUCKET"],
+        target_key.replace(".xml", ".csv"),
         bursar_csv,
     )
-    csv_location = f"{os.environ['TARGET_BUCKET']}/{key.replace('.xml', '.csv')}"
+    csv_location = (
+        f"{os.environ['ALMA_BURSAR_TARGET_BUCKET']}/"
+        f"{target_key.replace('.xml', '.csv')}"
+    )
     logger.info("bursar csv available for download at %s", csv_location)
