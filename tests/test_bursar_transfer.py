@@ -38,9 +38,17 @@ def test_get_bursar_export_xml_from_s3(mocked_s3) -> None:
     "test_date,expected",
     [
         (date(2023, 1, 1), "2023FA"),
+        (date(2023, 2, 1), "2023FA"),
         (date(2023, 3, 1), "2023SP"),
+        (date(2023, 4, 1), "2023SP"),
+        (date(2023, 5, 1), "2023SP"),
+        (date(2023, 6, 1), "2023SP"),
         (date(2023, 7, 1), "2023SU"),
-        (date(2023, 12, 3), "2024FA"),
+        (date(2023, 8, 1), "2023SU"),
+        (date(2023, 9, 1), "2024FA"),
+        (date(2023, 10, 1), "2024FA"),
+        (date(2023, 11, 1), "2024FA"),
+        (date(2023, 12, 1), "2024FA"),
     ],
 )
 def test_billing_term(test_date, expected) -> None:
