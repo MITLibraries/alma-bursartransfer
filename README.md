@@ -12,10 +12,10 @@ bursar's system.
 
 ## Required ENV
 
-- `ALMA_BURSAR_SOURCE_BUCKET` = The bucket containing the fine and fee data exported from Alma.
-- `ALMA_BURSAR_SOURCE_PREFIX` = prefix of the source object key within the source bucket.
-- `ALMA_BURSAR_TARGET_BUCKET` = The bucket where the transformed object will be deposited. 
-- `ALMA_BURSAR_TARGET_PREFIX` = prefix of the target object key within target bucket.
+- `SOURCE_BUCKET` = The bucket containing the fine and fee data exported from Alma.
+- `SOURCE_PREFIX` = prefix of the source object key within the source bucket.
+- `TARGET_BUCKET` = The bucket where the transformed object will be deposited. 
+- `TARGET_PREFIX` = prefix of the target object key within target bucket.
 - `WORKSPACE` = Set to `dev` for local development, this will be set to `stage` and `prod` in those environments by Terraform.
 
 ## Optional ENV

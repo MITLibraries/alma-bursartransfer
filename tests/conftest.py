@@ -16,11 +16,11 @@ def aws_credentials():
 @pytest.fixture(autouse=True)
 def test_env():
     os.environ = {
-        "ALMA_BURSAR_SOURCE_BUCKET": "test-alma-bucket",
-        "ALMA_BURSAR_TARGET_BUCKET": "test-pickup-bucket",
+        "SOURCE_BUCKET": "test-alma-bucket",
+        "TARGET_BUCKET": "test-pickup-bucket",
         "WORKSPACE": "test",
-        "ALMA_BURSAR_SOURCE_PREFIX": "exlibris/bursar/",
-        "ALMA_BURSAR_TARGET_PREFIX": "exlibris/bursar/",
+        "SOURCE_PREFIX": "test/source-prefix/",
+        "TARGET_PREFIX": "test/target-prefix/",
     }
 
 
@@ -36,7 +36,7 @@ def mocked_s3():
         ) as file:
             client.put_object(
                 Bucket="test-alma-bucket",
-                Key="exlibris/bursar/test.xml",
+                Key="test/source-prefix/test.xml",
                 Body=file,
             )
         yield client
