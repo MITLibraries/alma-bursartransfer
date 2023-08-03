@@ -30,6 +30,42 @@ else:
     logger.info("No Sentry DSN found, exceptions will not be sent to Sentry")
 
 
+def get_key_from_job_id(
+    s3_client: S3Client, bucket: str, prefix_with_job_id: str
+) -> str:
+    """Use the Alma bursar transfer job ID to return the corresponding filename in s3.
+
+    :param s3_client - a boto S3Client instance
+    :param bucket - the source bucket where the export file from Alma lands.
+    :param prefix_with_job_id - the beginning / predictable part of the filename.
+
+    When fines and fees are exported from Alma, the filename takes the form
+    [bursar transfer integration profile name]-[alma job id]-[time stamp].xml
+
+    We don't have a way to know the time stamp based on the data available to this app.
+
+    Given a bucket and prefix, find all of the object keys beginning with that prefix.
+    Because the job ID in the prefix is unique, there should only be one matching file.
+    If not, raise a KeyError.
+    """
+    keys = s3_client.list_objects_v2(Bucket=bucket, Prefix=prefix_with_job_id)
+    try:
+        source_key = keys["Contents"][0]["Key"]
+    except KeyError as error:
+        raise KeyError(
+            f"No files retrieved from bucket '{bucket}'"
+            f"with prefix '{prefix_with_job_id}'"
+        ) from error
+
+    if len(keys["Contents"]) > 1:
+        raise KeyError(
+            f"multiple files retrieved from bucket '{bucket}'"
+            f"with prefix '{prefix_with_job_id}'"
+        )
+
+    return source_key
+
+
 def get_bursar_export_xml_from_s3(s3_client: S3Client, bucket: str, key: str) -> str:
     """Get an object bytes data from s3 and return as a utf-8 encoded string."""
     response = s3_client.get_object(Bucket=bucket, Key=key)
@@ -120,10 +156,20 @@ def lambda_handler(event: dict, context: object) -> dict:  # noqa
 
     # Create boto3 client
     s3_client = boto3.client("s3")
-    key = event["key"]
 
-    source_key = f"{os.environ['SOURCE_PREFIX']}{key}"
-    target_key = f"{os.environ['TARGET_PREFIX']}{key}"
+    source_key = get_key_from_job_id(
+        s3_client,
+        bucket=os.environ["SOURCE_BUCKET"],
+        prefix_with_job_id=(
+            f"{os.environ['SOURCE_PREFIX']}"
+            f"{event['job_name']}-"
+            f"{event['job_id']}"
+        ),
+    )
+
+    target_key = source_key.replace(
+        os.environ["SOURCE_PREFIX"], os.environ["TARGET_PREFIX"]
+    ).replace(".xml", ".csv")
 
     # Get the XML from s3
     alma_xml = get_bursar_export_xml_from_s3(
@@ -137,11 +183,9 @@ def lambda_handler(event: dict, context: object) -> dict:  # noqa
     put_csv(
         s3_client,
         os.environ["TARGET_BUCKET"],
-        target_key.replace(".xml", ".csv"),
+        target_key,
         bursar_csv,
     )
-    csv_location = (
-        f"{os.environ['TARGET_BUCKET']}/" f"{target_key.replace('.xml', '.csv')}"
-    )
+    csv_location = f"{os.environ['TARGET_BUCKET']}/{target_key}"
     logger.info("bursar csv available for download at %s", csv_location)
     return {"target_file": csv_location}

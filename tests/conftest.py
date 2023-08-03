@@ -36,9 +36,28 @@ def mocked_s3():
         ) as file:
             client.put_object(
                 Bucket="test-alma-bucket",
-                Key="test/source-prefix/test.xml",
+                Key="test/source-prefix/bursar export test-1234-5678.xml",
                 Body=file,
             )
+        client.create_bucket(Bucket="no-files")  # a bucket with no files
+        client.create_bucket(Bucket="no-match")
+        client.put_object(
+            Bucket="no-match",
+            Key="test/source-prefix/bursar export test-abcd-5678.xml",
+            Body="no match",
+        )
+        client.create_bucket(Bucket="multiple-matches")
+        client.put_object(
+            Bucket="multiple-matches",
+            Key="test/source-prefix/bursar export test-1234-5678.xml",
+            Body="multiple file 1",
+        )
+        client.put_object(
+            Bucket="multiple-matches",
+            Key="test/source-prefix/bursar export test-1234-abcd.xml",
+            Body="multiple file 2",
+        )
+
         yield client
 
 
@@ -56,5 +75,5 @@ def test_xml() -> str:
 
 @pytest.fixture()
 def event_data():
-    event = {"key": "test.xml"}
+    event = {"job_name": "bursar export test", "job_id": "1234"}
     return event

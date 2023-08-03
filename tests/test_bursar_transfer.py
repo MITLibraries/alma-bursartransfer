@@ -23,12 +23,46 @@ def test_bursar_transfer_doesnt_configure_sentry_if_dsn_not_present(
     assert "No Sentry DSN found, exceptions will not be sent to Sentry" in caplog.text
 
 
+def test_get_key_from_job_id_bucket_with_matching_file(mocked_s3):
+    key = bursar_transfer.get_key_from_job_id(
+        mocked_s3,
+        bucket="test-alma-bucket",
+        prefix_with_job_id="test/source-prefix/bursar export test-1234",
+    )
+    assert key == "test/source-prefix/bursar export test-1234-5678.xml"
+
+
+def test_get_key_from_job_id_bucket_with_no_file(mocked_s3):
+    with pytest.raises(KeyError):
+        bursar_transfer.get_key_from_job_id(
+            mocked_s3, bucket="no-files", prefix_with_job_id="nope"
+        )
+
+
+def test_get_key_from_job_id_without_matching_file(mocked_s3):
+    with pytest.raises(KeyError):
+        bursar_transfer.get_key_from_job_id(
+            mocked_s3, bucket="no-match", prefix_with_job_id="bad/prefix-1234"
+        )
+
+
+def test_get_key_from_job_id_with_multiple_matching_file(mocked_s3):
+    with pytest.raises(KeyError):
+        bursar_transfer.get_key_from_job_id(
+            mocked_s3,
+            bucket="multiple-matches",
+            prefix_with_job_id="test/source-prefix/bursar export test-1234",
+        )
+
+
 def test_get_bursar_export_xml_from_s3(mocked_s3) -> None:
     with open("tests/fixtures/test.xml", encoding="utf-8") as file:
         xml_file = file.read()
     assert (
         bursar_transfer.get_bursar_export_xml_from_s3(
-            mocked_s3, bucket="test-alma-bucket", key="test/source-prefix/test.xml"
+            mocked_s3,
+            bucket="test-alma-bucket",
+            key="test/source-prefix/bursar export test-1234-5678.xml",
         )
         == xml_file
     )
@@ -96,7 +130,9 @@ def test_lambda_handler_missing_workspace_env_raises_error(monkeypatch) -> None:
 
 
 def test_lambda_handler_success(event_data, caplog) -> None:
-    csv_location = "test-pickup-bucket/test/target-prefix/test.csv"
+    csv_location = (
+        "test-pickup-bucket/test/target-prefix/bursar export test-1234-5678.csv"
+    )
     response = bursar_transfer.lambda_handler(event_data, {})
     assert f"bursar csv available for download at {csv_location}" in caplog.text
     assert response == {"target_file": csv_location}
