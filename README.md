@@ -44,7 +44,7 @@ bursar's system.
 |7 or 8                     | \<yyyy>SU   |
 |9, 10, 11 or 12            | \<yyyy+1>FA
 
-## Running locally
+## Local Testing
 
 <https://docs.aws.amazon.com/lambda/latest/dg/images-test.html>
 
@@ -54,20 +54,22 @@ bursar's system.
   docker build -t bursar_transfer:latest .
   ```
 
-- Run the default handler for the container:
+- Run the default handler for the container, with required environment variables in `.env`. Make sure the buckets in your `.env` actually exist:
 
   ```bash
-  docker run -e WORKSPACE=dev -p 9000:8080 bursar_transfer:latest
+  docker run --env-file .env -p 9000:8080 bursar_transfer:latest
   ```
+
+- Upload a source file to s3 bucket and folder specified in your `.env`. You can use the file `tests/fixtures/test.xml` rename it to `test_name-test_id-12345.xml`
 
 - Post to the container:
 
   ```bash
-  curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{}'
+  url -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"job_name":"test_name","job_id":"test_id"}'
   ```
 
 - Observe output:
 
   ```
-  "You have successfully called this lambda!"
+  {"target_file": "[TARGET_BUCKET]/[TARGET_PREFIX]test_name-test_id-12345.csv"}
   ```
