@@ -54,7 +54,7 @@ bursar's system.
   docker build -t bursar_transfer:latest .
   ```
 
-- Run the default handler for the container, with required environment variables in `.env`. Make sure the buckets in your `.env` actually exist:
+- Run the default handler for the container, with required environment variables and AWS credentials in `.env`. Make sure the buckets in your `.env` actually exist:
 
   ```bash
   docker run --env-file .env -p 9000:8080 bursar_transfer:latest
@@ -65,7 +65,7 @@ bursar's system.
 - Post to the container:
 
   ```bash
-  url -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"job_name":"test_name","job_id":"test_id"}'
+  curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"job_name":"test_name","job_id":"test_id"}'
   ```
 
 - Observe output:

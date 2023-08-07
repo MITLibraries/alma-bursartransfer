@@ -92,8 +92,9 @@ def test_billing_term(test_date, expected) -> None:
 def test_xml_to_csv_error_if_missing_field(test_xml: str) -> None:
     xml_missing_amount = test_xml.replace("123.45", "")
     today = date(2023, 3, 1)
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as error:
         bursar_transfer.xml_to_csv(xml_missing_amount, today)
+    assert "One or more required values are missing from the export file" in str(error)
 
 
 def test_xml_to_csv(test_xml: str) -> None:
@@ -134,5 +135,5 @@ def test_lambda_handler_success(event_data, caplog) -> None:
         "test-pickup-bucket/test/target-prefix/bursar export test-1234-5678.csv"
     )
     response = bursar_transfer.lambda_handler(event_data, {})
-    assert f"bursar csv available for download at {csv_location}" in caplog.text
+    assert f"Bursar csv available for download at {csv_location}" in caplog.text
     assert response == {"target_file": csv_location}

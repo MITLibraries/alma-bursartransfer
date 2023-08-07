@@ -73,6 +73,11 @@ def get_bursar_export_xml_from_s3(s3_client: S3Client, bucket: str, key: str) ->
 
 
 def billing_term(today: date) -> str:
+    """Calculate the appropriate billing term code based on the current date.
+
+    See https://mitlibraries.atlassian.net/browse/ENSY-182 for details on bursar's
+    specifications and library business rules.
+    """
     year = int(today.strftime("%Y"))
     month = today.month
     if month in [1, 2]:
@@ -93,7 +98,8 @@ def billing_term(today: date) -> str:
 def xml_to_csv(alma_xml: str, today: date) -> str:
     """Convert xml from the alma bursar export to a csv.
 
-    see jira XXXXX for details on bursar's specifications and library business rules.
+    See https://mitlibraries.atlassian.net/browse/ENSY-182 for details on bursar's
+    specifications and library business rules.
     """
     csv_file = StringIO()
     csv_fieldnames = [
@@ -136,10 +142,11 @@ def xml_to_csv(alma_xml: str, today: date) -> str:
             csv_line["EFFECTIVEDATE"] = "effective_date"  # Not sure how to calculate
             csv_line["BILLINGTERM"] = billing_term(today)
             if all(csv_line.values()):
-                print(csv_line)
                 writer.writerow(csv_line)
             else:
-                raise ValueError
+                raise ValueError(
+                    "One or more required values are missing from the export file"
+                )
 
     return csv_file.getvalue()
 
@@ -187,5 +194,5 @@ def lambda_handler(event: dict, context: object) -> dict:  # noqa
         bursar_csv,
     )
     csv_location = f"{os.environ['TARGET_BUCKET']}/{target_key}"
-    logger.info("bursar csv available for download at %s", csv_location)
+    logger.info("Bursar csv available for download at %s", csv_location)
     return {"target_file": csv_location}
