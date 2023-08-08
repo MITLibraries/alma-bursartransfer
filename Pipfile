@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 sentry-sdk = "*"
+boto3 = "*"
+boto3-stubs = {extras = ["s3"], version = "*"}
 
 [dev-packages]
 bandit = "*"
@@ -14,6 +16,9 @@ coveralls = "*"
 mypy = "*"
 pylama = {extras = ["all"], version = "*"}
 pytest = "*"
+moto = {extras = ["s3"], version = "*"}
+types-urllib3 = "*"
+types-requests = "*"
 
 [requires]
 python_version = "3.9"
