@@ -1,4 +1,5 @@
 import csv
+import json
 import logging
 import os
 from datetime import date
@@ -10,9 +11,9 @@ import sentry_sdk
 from mypy_boto3_s3 import S3Client
 from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
 
+logging.basicConfig()
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.DEBUG)
-
+logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
 TODAY = date.today()
 
 env = os.getenv("WORKSPACE")
@@ -48,6 +49,11 @@ def get_key_from_job_id(
     Because the job ID in the prefix is unique, there should only be one matching file.
     If not, raise a KeyError.
     """
+    logger.debug(
+        "Getting bursar file from bucket: %s, with prefix: %s",
+        bucket,
+        prefix_with_job_id,
+    )
     keys = s3_client.list_objects_v2(Bucket=bucket, Prefix=prefix_with_job_id)
     try:
         source_key = keys["Contents"][0]["Key"]
@@ -158,6 +164,7 @@ def put_csv(s3_client: S3Client, bucket: str, key: str, csv_file: str) -> None:
 
 
 def lambda_handler(event: dict, context: object) -> dict:  # noqa
+    logger.debug("lambda handler starting with event: %s", json.dumps(event))
     if not os.getenv("WORKSPACE"):
         raise RuntimeError("Required env variable WORKSPACE is not set")
 
