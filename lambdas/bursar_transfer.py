@@ -167,11 +167,7 @@ def lambda_handler(event: dict, context: object) -> dict:  # noqa
     source_key = get_key_from_job_id(
         s3_client,
         bucket=os.environ["SOURCE_BUCKET"],
-        prefix_with_job_id=(
-            f"{os.environ['SOURCE_PREFIX']}"
-            f"{event['job_name']}-"
-            f"{event['job_id']}"
-        ),
+        prefix_with_job_id=(f"{os.environ['SOURCE_PREFIX']}-{event['job_id']}"),
     )
 
     target_key = source_key.replace(

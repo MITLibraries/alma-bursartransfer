@@ -75,5 +75,5 @@ def test_xml() -> str:
 
 @pytest.fixture()
 def event_data():
-    event = {"job_name": "bursar export test", "job_id": "1234"}
+    event = {"job_id": "1234"}
     return event
