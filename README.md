@@ -13,9 +13,9 @@ bursar's system.
 ## Required ENV
 
 - `SOURCE_BUCKET` = The bucket containing the fine and fee data exported from Alma.
-- `SOURCE_PREFIX` = prefix of the source object key within the source bucket.
+- `SOURCE_PREFIX` = The prefix of the source object key within the source bucket, up to, but not including the hyphen before the job id. This will look something like `[s3 source folder]/[s3 source subfolder]/[bursar integration profile code from alma]`. The bursar integration's *profile code* in Alma is used as the start of the filename that Alma exports. 
 - `TARGET_BUCKET` = The bucket where the transformed object will be deposited. 
-- `TARGET_PREFIX` = prefix of the target object key within target bucket.
+- `TARGET_PREFIX` = Prefix of the target object key within target bucket. This will look something like `[s3 target folder]/[s3 target subfolder]/[beginning of target filename]`
 - `WORKSPACE` = Set to `dev` for local development, this will be set to `stage` and `prod` in those environments by Terraform.
 
 ## Optional ENV
