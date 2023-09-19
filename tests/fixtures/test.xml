@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xb:xml-fragment xmlns:xb="http://com/exlibris/urm/rep/externalsysfinesfees/xmlbeans">
 	<xb:userExportedFineFees>
-		<xb:exportNumber>13592334070006761</xb:exportNumber>
+		<xb:exportNumber>15216075870006761</xb:exportNumber>
 	</xb:userExportedFineFees>
 	<xb:userExportedFineFees>
 		<xb:userExportedList>
@@ -18,13 +18,13 @@
 					<xb:userFineFee>
 						<xb:fineFeeComment xsi:nil="true"
 							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
-						<xb:fineFeeType>LOSTITEMREPLACEMENTFEE</xb:fineFeeType>
+						<xb:fineFeeType>OVERDUEFINE</xb:fineFeeType>
 						<xb:owneredEntity>
 							<xb:InstitutionId>6761</xb:InstitutionId>
 							<xb:libraryId>161686070006761</xb:libraryId>
 							<xb:libraryCode>RTC</xb:libraryCode>
 						</xb:owneredEntity>
-						<xb:lastTransactionDate>05/12/2023 00:08:34</xb:lastTransactionDate>
+						<xb:lastTransactionDate>09/12/2023 15:22:06</xb:lastTransactionDate>
 						<xb:itemTitle>Ecology of the saguaro /</xb:itemTitle>
 						<xb:itemCallNumebr>QK495.C11 S64 1977</xb:itemCallNumebr>
 						<xb:itemLibrary>Hayden Library.</xb:itemLibrary>
@@ -39,7 +39,151 @@
 							<xb:vat xsi:nil="true"
 								xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
 						</xb:compositeSum>
-						<xb:bursarTransactionId>13592333900006761</xb:bursarTransactionId>
+						<xb:bursarTransactionId>15216075630006761</xb:bursarTransactionId>
+					</xb:userFineFee>
+					<xb:userFineFee>
+						<xb:fineFeeComment xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:fineFeeType>OVERDUEFINE</xb:fineFeeType>
+						<xb:owneredEntity>
+							<xb:InstitutionId>6761</xb:InstitutionId>
+							<xb:libraryId>161686070006761</xb:libraryId>
+							<xb:libraryCode>RTC</xb:libraryCode>
+						</xb:owneredEntity>
+						<xb:lastTransactionDate>09/12/2023 15:22:26</xb:lastTransactionDate>
+						<xb:itemTitle>Ecology of the saguaro /</xb:itemTitle>
+						<xb:itemCallNumebr>QK495.C11 S64 1977</xb:itemCallNumebr>
+						<xb:itemLibrary>Hayden Library.</xb:itemLibrary>
+						<xb:itemLocation>Stacks</xb:itemLocation>
+						<xb:itemInternalLocation>Stacks</xb:itemInternalLocation>
+						<xb:itemDueDate xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:itemBarcode>39080036507785</xb:itemBarcode>
+						<xb:compositeSum>
+							<xb:currency>USD</xb:currency>
+							<xb:sum>0.82</xb:sum>
+							<xb:vat xsi:nil="true"
+								xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						</xb:compositeSum>
+						<xb:bursarTransactionId>15216075640006761</xb:bursarTransactionId>
+					</xb:userFineFee>
+					<xb:userFineFee>
+						<xb:fineFeeComment xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:fineFeeType>LOSTITEMREPLACEMENTFEE</xb:fineFeeType>
+						<xb:owneredEntity>
+							<xb:InstitutionId>6761</xb:InstitutionId>
+							<xb:libraryId>161686070006761</xb:libraryId>
+							<xb:libraryCode>RTC</xb:libraryCode>
+						</xb:owneredEntity>
+						<xb:lastTransactionDate>09/12/2023 15:15:23</xb:lastTransactionDate>
+						<xb:itemTitle>The Rough-Stuff Fellowship archive /</xb:itemTitle>
+						<xb:itemCallNumebr>GV1056.R68 2019</xb:itemCallNumebr>
+						<xb:itemLibrary>Hayden Library</xb:itemLibrary>
+						<xb:itemLocation>Stacks</xb:itemLocation>
+						<xb:itemInternalLocation>Stacks</xb:itemInternalLocation>
+						<xb:itemDueDate xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:itemBarcode>39080037379556</xb:itemBarcode>
+						<xb:compositeSum>
+							<xb:currency>USD</xb:currency>
+							<xb:sum>300</xb:sum>
+							<xb:vat xsi:nil="true"
+								xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						</xb:compositeSum>
+						<xb:bursarTransactionId>15216075490006761</xb:bursarTransactionId>
+					</xb:userFineFee>
+					<xb:userFineFee>
+						<xb:fineFeeComment xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:fineFeeType>OVERDUEFINE</xb:fineFeeType>
+						<xb:owneredEntity>
+							<xb:InstitutionId>6761</xb:InstitutionId>
+							<xb:libraryId>161686070006761</xb:libraryId>
+							<xb:libraryCode>RTC</xb:libraryCode>
+						</xb:owneredEntity>
+						<xb:lastTransactionDate>09/12/2023 15:22:53</xb:lastTransactionDate>
+						<xb:itemTitle>The Rough-Stuff Fellowship archive /</xb:itemTitle>
+						<xb:itemCallNumebr>GV1056.R68 2019</xb:itemCallNumebr>
+						<xb:itemLibrary>Hayden Library</xb:itemLibrary>
+						<xb:itemLocation>Stacks</xb:itemLocation>
+						<xb:itemInternalLocation>Stacks</xb:itemInternalLocation>
+						<xb:itemDueDate xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:itemBarcode>39080037379556</xb:itemBarcode>
+						<xb:compositeSum>
+							<xb:currency>USD</xb:currency>
+							<xb:sum>1.45</xb:sum>
+							<xb:vat xsi:nil="true"
+								xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						</xb:compositeSum>
+						<xb:bursarTransactionId>15216075650006761</xb:bursarTransactionId>
+					</xb:userFineFee>
+				</xb:finefeeList>
+			</xb:userExportedFineFeesList>
+			<xb:userExportedFineFeesList>
+				<xb:user>
+					<xb:type>02</xb:type>
+					<xb:value>09876</xb:value>
+					<xb:owneredEntity>
+						<xb:InstitutionId>6761</xb:InstitutionId>
+					</xb:owneredEntity>
+				</xb:user>
+				<xb:patronName>The Beaver, Tim</xb:patronName>
+				<xb:finefeeList>
+					<xb:userFineFee>
+						<xb:fineFeeComment xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:fineFeeType>LOSTITEMREPLACEMENTFEE</xb:fineFeeType>
+						<xb:owneredEntity>
+							<xb:InstitutionId>6761</xb:InstitutionId>
+							<xb:libraryId>161686070006761</xb:libraryId>
+							<xb:libraryCode>RTC</xb:libraryCode>
+						</xb:owneredEntity>
+						<xb:lastTransactionDate>09/12/2023 15:24:14</xb:lastTransactionDate>
+						<xb:itemTitle>Case studies of child play areas and child support facilities
+							: travel and field research report /</xb:itemTitle>
+						<xb:itemCallNumebr>HV854.C56</xb:itemCallNumebr>
+						<xb:itemLibrary>Rotch Library</xb:itemLibrary>
+						<xb:itemLocation>Stacks</xb:itemLocation>
+						<xb:itemInternalLocation>Stacks</xb:itemInternalLocation>
+						<xb:itemDueDate xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:itemBarcode>39080002699707</xb:itemBarcode>
+						<xb:compositeSum>
+							<xb:currency>USD</xb:currency>
+							<xb:sum>100</xb:sum>
+							<xb:vat xsi:nil="true"
+								xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						</xb:compositeSum>
+						<xb:bursarTransactionId>15216075700006761</xb:bursarTransactionId>
+					</xb:userFineFee>
+					<xb:userFineFee>
+						<xb:fineFeeComment xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:fineFeeType>OVERDUEFINE</xb:fineFeeType>
+						<xb:owneredEntity>
+							<xb:InstitutionId>6761</xb:InstitutionId>
+							<xb:libraryId>161686070006761</xb:libraryId>
+							<xb:libraryCode>RTC</xb:libraryCode>
+						</xb:owneredEntity>
+						<xb:lastTransactionDate>09/12/2023 15:23:25</xb:lastTransactionDate>
+						<xb:itemTitle>Case studies of child play areas and child support facilities
+							: travel and field research report /</xb:itemTitle>
+						<xb:itemCallNumebr>HV854.C56</xb:itemCallNumebr>
+						<xb:itemLibrary>Rotch Library</xb:itemLibrary>
+						<xb:itemLocation>Stacks</xb:itemLocation>
+						<xb:itemInternalLocation>Stacks</xb:itemInternalLocation>
+						<xb:itemDueDate xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:itemBarcode>39080002699707</xb:itemBarcode>
+						<xb:compositeSum>
+							<xb:currency>USD</xb:currency>
+							<xb:sum>14</xb:sum>
+							<xb:vat xsi:nil="true"
+								xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						</xb:compositeSum>
+						<xb:bursarTransactionId>15216075690006761</xb:bursarTransactionId>
 					</xb:userFineFee>
 				</xb:finefeeList>
 			</xb:userExportedFineFeesList>

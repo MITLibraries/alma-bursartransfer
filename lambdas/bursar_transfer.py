@@ -4,6 +4,7 @@ import logging
 import os
 from datetime import date
 from io import StringIO
+from math import fsum
 from xml.etree import ElementTree  # nosec
 
 import boto3
@@ -101,7 +102,7 @@ def billing_term(today: date) -> str:
     return f"{term_year}{term_code}"
 
 
-def xml_to_csv(alma_xml: str, today: date) -> str:
+def xml_to_csv(alma_xml: str, today: date) -> StringIO:
     """Convert xml from the alma bursar export to a csv.
 
     See https://mitlibraries.atlassian.net/browse/ENSY-182 for details on bursar's
@@ -154,13 +155,24 @@ def xml_to_csv(alma_xml: str, today: date) -> str:
                     "One or more required values are missing from the export file"
                 )
 
-    return csv_file.getvalue()
+    return csv_file
 
 
 def put_csv(s3_client: S3Client, bucket: str, key: str, csv_file: str) -> None:
     s3_client.put_object(
         Bucket=bucket, Key=key, Body=csv_file.encode("utf-8"), ContentType="text/csv"
     )
+
+
+def get_records_and_total_charges(bursar_csv: StringIO) -> tuple[int, float]:
+    bursar_csv.seek(0)
+    records = 0
+    total_charges = float()
+    reader = csv.DictReader(bursar_csv)
+    for row in reader:
+        records += 1
+        total_charges = fsum([total_charges, float(row["AMOUNT"])])
+    return records, total_charges
 
 
 def lambda_handler(event: dict, context: object) -> dict:  # noqa
@@ -194,8 +206,13 @@ def lambda_handler(event: dict, context: object) -> dict:  # noqa
         s3_client,
         os.environ["TARGET_BUCKET"],
         target_key,
-        bursar_csv,
+        bursar_csv.getvalue(),
     )
     csv_location = f"{os.environ['TARGET_BUCKET']}/{target_key}"
+    records, total_charges = get_records_and_total_charges(bursar_csv)
     logger.info("Bursar csv available for download at %s", csv_location)
-    return {"target_file": csv_location}
+    return {
+        "target_file": csv_location,
+        "records": records,
+        "total_charges": total_charges,
+    }

@@ -105,10 +105,12 @@ def test_xml_to_csv_error_if_missing_field(test_xml: str) -> None:
 
 
 def test_xml_to_csv(test_xml: str) -> None:
-    with open("tests/fixtures/test.csv", encoding="utf-8") as file:
-        expected_file = file.read()
+    with open("tests/fixtures/test.csv", encoding="utf-8") as expected_file:
         today = date(2023, 3, 1)
-        assert bursar_transfer.xml_to_csv(test_xml, today) == expected_file
+        assert (
+            bursar_transfer.xml_to_csv(test_xml, today).getvalue()
+            == expected_file.read()
+        )
 
 
 def test_put_csv(mocked_s3) -> None:
@@ -148,5 +150,12 @@ def test_lambda_handler_success(event_data, caplog) -> None:
         f"lambda handler starting with event: {json.dumps(event_data)}" in caplog.text
     )
 
+    records = 6
+    total_charges = 539.72
+    response = bursar_transfer.lambda_handler(event_data, {})
     assert f"Bursar csv available for download at {csv_location}" in caplog.text
-    assert response == {"target_file": csv_location}
+    assert response == {
+        "target_file": csv_location,
+        "records": records,
+        "total_charges": total_charges,
+    }
