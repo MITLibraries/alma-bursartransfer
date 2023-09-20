@@ -176,7 +176,7 @@ def get_records_and_total_charges(bursar_csv: StringIO) -> tuple[int, float]:
 
 
 def lambda_handler(event: dict, context: object) -> dict:  # noqa
-    logger.debug("lambda handler starting with event: %s", json.dumps(event))
+    logger.debug("Lambda handler starting with event: %s", json.dumps(event))
     if not os.getenv("WORKSPACE"):
         raise RuntimeError("Required env variable WORKSPACE is not set")
 

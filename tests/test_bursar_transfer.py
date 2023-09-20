@@ -147,7 +147,7 @@ def test_lambda_handler_success(event_data, caplog) -> None:
     with caplog.at_level(logging.DEBUG, logger="lambdas.bursar_transfer"):
         response = bursar_transfer.lambda_handler(event_data, {})
     assert (
-        f"lambda handler starting with event: {json.dumps(event_data)}" in caplog.text
+        f"Lambda handler starting with event: {json.dumps(event_data)}" in caplog.text
     )
 
     records = 6
