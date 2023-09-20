@@ -78,5 +78,8 @@ bursar's system.
 - Observe output:
 
   ```
-  {"target_file": "[TARGET_BUCKET]/[TARGET_PREFIX]-1234-5678.csv"}
+  {"target_file": "[TARGET_BUCKET]/[TARGET_PREFIX]-1234-5678.csv",
+  "records": [count of records in the file],
+  "total_charges: [sum of charges in the file]
+  }
   ```
