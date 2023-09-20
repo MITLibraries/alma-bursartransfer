@@ -1,3 +1,5 @@
+import json
+import logging
 from datetime import date
 from importlib import reload
 
@@ -23,13 +25,18 @@ def test_bursar_transfer_doesnt_configure_sentry_if_dsn_not_present(
     assert "No Sentry DSN found, exceptions will not be sent to Sentry" in caplog.text
 
 
-def test_get_key_from_job_id_bucket_with_matching_file(mocked_s3):
-    key = bursar_transfer.get_key_from_job_id(
-        mocked_s3,
-        bucket="test-alma-bucket",
-        prefix_with_job_id="test/source-prefix/bursar export test-1234",
+def test_get_key_from_job_id_bucket_with_matching_file(mocked_s3, caplog):
+    with caplog.at_level(logging.DEBUG, logger="lambdas.bursar_transfer"):
+        key = bursar_transfer.get_key_from_job_id(
+            mocked_s3,
+            bucket="test-alma-bucket",
+            prefix_with_job_id="test/source-prefix/bursar_export_to_test-1234",
+        )
+    assert (
+        "Getting bursar file from bucket: test-alma-bucket, with prefix: test/"
+        "source-prefix/bursar_export_to_test-1234" in caplog.text
     )
-    assert key == "test/source-prefix/bursar export test-1234-5678.xml"
+    assert key == "test/source-prefix/bursar_export_to_test-1234-5678.xml"
 
 
 def test_get_key_from_job_id_bucket_with_no_file(mocked_s3):
@@ -51,7 +58,7 @@ def test_get_key_from_job_id_with_multiple_matching_file(mocked_s3):
         bursar_transfer.get_key_from_job_id(
             mocked_s3,
             bucket="multiple-matches",
-            prefix_with_job_id="test/source-prefix/bursar export test-1234",
+            prefix_with_job_id="test/source-prefix/bursar_export_to_test-1234",
         )
 
 
@@ -62,7 +69,7 @@ def test_get_bursar_export_xml_from_s3(mocked_s3) -> None:
         bursar_transfer.get_bursar_export_xml_from_s3(
             mocked_s3,
             bucket="test-alma-bucket",
-            key="test/source-prefix/bursar export test-1234-5678.xml",
+            key="test/source-prefix/bursar_export_to_test-1234-5678.xml",
         )
         == xml_file
     )
@@ -132,8 +139,14 @@ def test_lambda_handler_missing_workspace_env_raises_error(monkeypatch) -> None:
 
 def test_lambda_handler_success(event_data, caplog) -> None:
     csv_location = (
-        "test-pickup-bucket/test/target-prefix/bursar export test-1234-5678.csv"
+        "test-pickup-bucket/test/target-prefix/"
+        "bursar_file_ready_to_pickup-1234-5678.csv"
     )
-    response = bursar_transfer.lambda_handler(event_data, {})
+    with caplog.at_level(logging.DEBUG, logger="lambdas.bursar_transfer"):
+        response = bursar_transfer.lambda_handler(event_data, {})
+    assert (
+        f"lambda handler starting with event: {json.dumps(event_data)}" in caplog.text
+    )
+
     assert f"Bursar csv available for download at {csv_location}" in caplog.text
     assert response == {"target_file": csv_location}

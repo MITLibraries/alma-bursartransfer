@@ -13,9 +13,9 @@ bursar's system.
 ## Required ENV
 
 - `SOURCE_BUCKET` = The bucket containing the fine and fee data exported from Alma.
-- `SOURCE_PREFIX` = prefix of the source object key within the source bucket.
+- `SOURCE_PREFIX` = The prefix of the source object key within the source bucket, up to, but not including the hyphen before the job id. This will look something like `[s3 source folder]/[s3 source subfolder]/[bursar integration profile code from alma]`. The bursar integration's *profile code* in Alma is used as the start of the filename that Alma exports. 
 - `TARGET_BUCKET` = The bucket where the transformed object will be deposited. 
-- `TARGET_PREFIX` = prefix of the target object key within target bucket.
+- `TARGET_PREFIX` = Prefix of the target object key within target bucket. This will look something like `[s3 target folder]/[s3 target subfolder]/[beginning of target filename]`
 - `WORKSPACE` = Set to `dev` for local development, this will be set to `stage` and `prod` in those environments by Terraform.
 
 ## Optional ENV
@@ -54,22 +54,29 @@ bursar's system.
   docker build -t bursar_transfer:latest .
   ```
 
-- Run the default handler for the container, with required environment variables and AWS credentials in `.env`. Make sure the buckets in your `.env` actually exist:
+- Run the default handler for the container
+  - Required environment variables and AWS credentials must be in `.env`. 
+  - Make sure the buckets in your `.env` actually exist
+
 
   ```bash
   docker run --env-file .env -p 9000:8080 bursar_transfer:latest
   ```
 
-- Upload a source file to s3 bucket and folder specified in your `.env`. You can use the file `tests/fixtures/test.xml` rename it to `test_name-test_id-12345.xml`
+- Upload a sample bursar export .xml file to the `SOURCE_BUCKET` specified in your `.env`. rename the file and move to a different subfolder if necessary so that the object key looks like `[SOURCE_PREFIX]-[job_id]-[timestamp].xml`
+  - For example the object key could be `test/bursar/export-1234-5678.xml`
+  - Note that the timestamp can be any string, it doesn't have to be a 'real' timestamp
+  - You can use the fixture file in this repo `tests/fixtures/test.xml` as your sample file.
 
-- Post to the container:
+
+- Post to the container, passing in the `job_id` from the object key you created:
 
   ```bash
-  curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"job_name":"test_name","job_id":"test_id"}'
+  curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"job_id":"1234"}'
   ```
 
 - Observe output:
 
   ```
-  {"target_file": "[TARGET_BUCKET]/[TARGET_PREFIX]test_name-test_id-12345.csv"}
+  {"target_file": "[TARGET_BUCKET]/[TARGET_PREFIX]-1234-5678.csv"}
   ```

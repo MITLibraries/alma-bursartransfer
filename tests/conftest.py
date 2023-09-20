@@ -19,8 +19,8 @@ def test_env():
         "SOURCE_BUCKET": "test-alma-bucket",
         "TARGET_BUCKET": "test-pickup-bucket",
         "WORKSPACE": "test",
-        "SOURCE_PREFIX": "test/source-prefix/",
-        "TARGET_PREFIX": "test/target-prefix/",
+        "SOURCE_PREFIX": "test/source-prefix/bursar_export_to_test",
+        "TARGET_PREFIX": "test/target-prefix/bursar_file_ready_to_pickup",
     }
 
 
@@ -36,25 +36,25 @@ def mocked_s3():
         ) as file:
             client.put_object(
                 Bucket="test-alma-bucket",
-                Key="test/source-prefix/bursar export test-1234-5678.xml",
+                Key="test/source-prefix/bursar_export_to_test-1234-5678.xml",
                 Body=file,
             )
         client.create_bucket(Bucket="no-files")  # a bucket with no files
         client.create_bucket(Bucket="no-match")
         client.put_object(
             Bucket="no-match",
-            Key="test/source-prefix/bursar export test-abcd-5678.xml",
+            Key="test/source-prefix/bursar_export_to_test-abcd-5678.xml",
             Body="no match",
         )
         client.create_bucket(Bucket="multiple-matches")
         client.put_object(
             Bucket="multiple-matches",
-            Key="test/source-prefix/bursar export test-1234-5678.xml",
+            Key="test/source-prefix/bursar_export_to_test-1234-5678.xml",
             Body="multiple file 1",
         )
         client.put_object(
             Bucket="multiple-matches",
-            Key="test/source-prefix/bursar export test-1234-abcd.xml",
+            Key="test/source-prefix/bursar_export_to_test-1234-abcd.xml",
             Body="multiple file 2",
         )
 
@@ -75,5 +75,5 @@ def test_xml() -> str:
 
 @pytest.fixture()
 def event_data():
-    event = {"job_name": "bursar export test", "job_id": "1234"}
+    event = {"job_id": "1234"}
     return event
