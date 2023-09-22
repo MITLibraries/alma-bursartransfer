@@ -165,14 +165,20 @@ def put_csv(s3_client: S3Client, bucket: str, key: str, csv_file: str) -> None:
 
 
 def get_records_and_total_charges(bursar_csv: StringIO) -> tuple[int, float]:
+    """Return the number of records and sum of charges in the bursar export file.
+
+    Takes a `StringIO` containing the transformed bursar csv and returns the sum of
+    the charges from the Amount column and the number of records in the file excluding
+    the header row.
+    """
     bursar_csv.seek(0)
-    records = 0
+    record_count = 0
     total_charges = float()
-    reader = csv.DictReader(bursar_csv)
-    for row in reader:
-        records += 1
-        total_charges = fsum([total_charges, float(row["AMOUNT"])])
-    return records, total_charges
+
+    for row in csv.DictReader(bursar_csv):
+        record_count += 1
+        total_charges = round(fsum([total_charges, float(row["AMOUNT"])]), 2)
+    return record_count, total_charges
 
 
 def lambda_handler(event: dict, context: object) -> dict:  # noqa
@@ -209,10 +215,10 @@ def lambda_handler(event: dict, context: object) -> dict:  # noqa
         bursar_csv.getvalue(),
     )
     csv_location = f"{os.environ['TARGET_BUCKET']}/{target_key}"
-    records, total_charges = get_records_and_total_charges(bursar_csv)
+    record_count, total_charges = get_records_and_total_charges(bursar_csv)
     logger.info("Bursar csv available for download at %s", csv_location)
     return {
         "target_file": csv_location,
-        "records": records,
+        "record_count": record_count,
         "total_charges": total_charges,
     }

@@ -156,6 +156,6 @@ def test_lambda_handler_success(event_data, caplog) -> None:
     assert f"Bursar csv available for download at {csv_location}" in caplog.text
     assert response == {
         "target_file": csv_location,
-        "records": records,
+        "record_count": records,
         "total_charges": total_charges,
     }
