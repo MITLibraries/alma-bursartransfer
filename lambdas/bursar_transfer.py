@@ -4,6 +4,7 @@ import logging
 import os
 from datetime import date
 from io import StringIO
+from math import fsum
 from xml.etree import ElementTree  # nosec
 
 import boto3
@@ -101,7 +102,7 @@ def billing_term(today: date) -> str:
     return f"{term_year}{term_code}"
 
 
-def xml_to_csv(alma_xml: str, today: date) -> str:
+def xml_to_csv(alma_xml: str, today: date) -> StringIO:
     """Convert xml from the alma bursar export to a csv.
 
     See https://mitlibraries.atlassian.net/browse/ENSY-182 for details on bursar's
@@ -154,7 +155,7 @@ def xml_to_csv(alma_xml: str, today: date) -> str:
                     "One or more required values are missing from the export file"
                 )
 
-    return csv_file.getvalue()
+    return csv_file
 
 
 def put_csv(s3_client: S3Client, bucket: str, key: str, csv_file: str) -> None:
@@ -163,8 +164,25 @@ def put_csv(s3_client: S3Client, bucket: str, key: str, csv_file: str) -> None:
     )
 
 
+def get_records_and_total_charges(bursar_csv: StringIO) -> tuple[int, float]:
+    """Return the number of records and sum of charges in the bursar export file.
+
+    Takes a `StringIO` containing the transformed bursar csv and returns the sum of
+    the charges from the Amount column and the number of records in the file excluding
+    the header row.
+    """
+    bursar_csv.seek(0)
+    record_count = 0
+    total_charges = float()
+
+    for row in csv.DictReader(bursar_csv):
+        record_count += 1
+        total_charges = round(fsum([total_charges, float(row["AMOUNT"])]), 2)
+    return record_count, total_charges
+
+
 def lambda_handler(event: dict, context: object) -> dict:  # noqa
-    logger.debug("lambda handler starting with event: %s", json.dumps(event))
+    logger.debug("Lambda handler starting with event: %s", json.dumps(event))
     if not os.getenv("WORKSPACE"):
         raise RuntimeError("Required env variable WORKSPACE is not set")
 
@@ -194,8 +212,13 @@ def lambda_handler(event: dict, context: object) -> dict:  # noqa
         s3_client,
         os.environ["TARGET_BUCKET"],
         target_key,
-        bursar_csv,
+        bursar_csv.getvalue(),
     )
     csv_location = f"{os.environ['TARGET_BUCKET']}/{target_key}"
+    record_count, total_charges = get_records_and_total_charges(bursar_csv)
     logger.info("Bursar csv available for download at %s", csv_location)
-    return {"target_file": csv_location}
+    return {
+        "target_file": csv_location,
+        "record_count": record_count,
+        "total_charges": total_charges,
+    }

@@ -63,7 +63,7 @@ bursar's system.
   docker run --env-file .env -p 9000:8080 bursar_transfer:latest
   ```
 
-- Upload a sample bursar export .xml file to the `SOURCE_BUCKET` specified in your `.env`. rename the file and move to a different subfolder if necessary so that the object key looks like `[SOURCE_PREFIX]-[job_id]-[timestamp].xml`
+- Upload a sample bursar export .xml file to the `SOURCE_BUCKET` specified in your `.env`. Rename the file and move to a different subfolder if necessary so that the object key looks like `[SOURCE_PREFIX]-[job_id]-[timestamp].xml`
   - For example the object key could be `test/bursar/export-1234-5678.xml`
   - Note that the timestamp can be any string, it doesn't have to be a 'real' timestamp
   - You can use the fixture file in this repo `tests/fixtures/test.xml` as your sample file.
@@ -78,5 +78,8 @@ bursar's system.
 - Observe output:
 
   ```
-  {"target_file": "[TARGET_BUCKET]/[TARGET_PREFIX]-1234-5678.csv"}
+  {"target_file": "[TARGET_BUCKET]/[TARGET_PREFIX]-1234-5678.csv",
+  "records": [count of records in the file],
+  "total_charges: [sum of charges in the file]
+  }
   ```
