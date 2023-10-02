@@ -146,7 +146,13 @@ def xml_to_csv(alma_xml: str, today: date) -> StringIO:
             csv_line["AMOUNT"] = fine_fee.findtext(
                 "xb:compositeSum/xb:sum", default=None, namespaces=name_space
             )
-            csv_line["EFFECTIVEDATE"] = "effective_date"  # Not sure how to calculate
+            csv_line["EFFECTIVEDATE"] = fine_fee.findtext(
+                "xb:lastTransactionDate", default=None, namespaces=name_space
+            )
+            if csv_line["EFFECTIVEDATE"]:
+                csv_line["EFFECTIVEDATE"] = csv_line["EFFECTIVEDATE"][
+                    0:10
+                ]  # remove the timestamp from the date
             csv_line["BILLINGTERM"] = billing_term(today)
             if all(csv_line.values()):
                 writer.writerow(csv_line)

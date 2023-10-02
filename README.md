@@ -32,8 +32,8 @@ bursar's system.
 |                                  | DETAILCODE    |                                    |
 | Fine Fee Type                    | DESCRIPTION   | LOSTITEMREPLACEMENTFEE             |
 | Amount owed for the fine or fee  | AMOUNT        | 123.45                             |
-|                                  | EFFECTIVEDATE |                                    |
-| see calculating BILLINGTERM below| BILLINGTERM   |2023FA                              |
+|                                  | EFFECTIVEDATE <mm/dd/yyyy> |                                    |
+| see calculating BILLINGTERM below| BILLINGTERM \<YYYYXX\>   |2023FA                              |
 
 ### calculating BILLINGTERM values
 
