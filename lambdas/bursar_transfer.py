@@ -102,6 +102,25 @@ def billing_term(today: date) -> str:
     return f"{term_year}{term_code}"
 
 
+def translate_fine_fee_type(
+    fine_fee_type: str,
+) -> str:
+    """Convert fine fee code into human readable string.
+
+    raises an error if the code does not have a mapping.
+
+    Only the fine / fee types  we specify in alma should appear
+    in the export file, so if an error occurs here it may mean
+    that an unexpected change has been made in the Alma bursar
+    integration config.
+    """
+    if "overdue" in fine_fee_type.lower():
+        return "Library overdue"
+    if "lost" in fine_fee_type.lower():
+        return "Library lost"
+    raise ValueError(f"unrecoginzed fine fee type: {fine_fee_type}")
+
+
 def xml_to_csv(alma_xml: str, today: date) -> StringIO:
     """Convert xml from the alma bursar export to a csv.
 
@@ -139,10 +158,16 @@ def xml_to_csv(alma_xml: str, today: date) -> StringIO:
             "xb:patronName", default=None, namespaces=name_space
         )
         for fine_fee in user.iterfind("xb:finefeeList/xb:userFineFee", name_space):
-            csv_line["DETAILCODE"] = "ROLH"  # Not sure how to calculate
-            csv_line["DESCRIPTION"] = fine_fee.findtext(
-                "xb:fineFeeType", default=None, namespaces=name_space
+            csv_line["DETAILCODE"] = "ROLH"
+            barcode = fine_fee.findtext(
+                "xb:itemBarcode", default=None, namespaces=name_space
             )
+
+            fine_fee_type = translate_fine_fee_type(
+                fine_fee.findtext("xb:fineFeeType", default="", namespaces=name_space)
+            )
+            csv_line["DESCRIPTION"] = f"{fine_fee_type} {barcode}"[:30]
+
             csv_line["AMOUNT"] = fine_fee.findtext(
                 "xb:compositeSum/xb:sum", default=None, namespaces=name_space
             )

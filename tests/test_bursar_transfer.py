@@ -96,6 +96,20 @@ def test_billing_term(test_date, expected) -> None:
     assert bursar_transfer.billing_term(test_date) == expected
 
 
+@pytest.mark.parametrize(
+    "test_type,expected",
+    [("TEST Overdue", "Library overdue"), ("test lost", "Library lost")],
+)
+def test_translate_fine_fee_type_success(test_type, expected) -> None:
+    assert bursar_transfer.translate_fine_fee_type(test_type) == expected
+
+
+def test_translate_fine_fee_type_fail():
+    with pytest.raises(ValueError) as error:
+        bursar_transfer.translate_fine_fee_type("foo")
+    assert "unrecoginzed fine fee type: foo" in str(error)
+
+
 def test_xml_to_csv_error_if_missing_field(test_xml: str) -> None:
     xml_missing_amount = test_xml.replace("123.45", "")
     today = date(2023, 3, 1)
