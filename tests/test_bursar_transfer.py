@@ -118,6 +118,23 @@ def test_xml_to_csv_error_if_missing_field(test_xml: str) -> None:
     assert "One or more required values are missing from the export file" in str(error)
 
 
+def test_xml_to_csv_skip_line_if_unknown_fine_fee_type(test_xml: str, caplog) -> None:
+    with caplog.at_level(logging.DEBUG, logger="lambdas.bursar_transfer"):
+        xml_missing_amount = test_xml.replace("OVERDUEFINE", "foo", 1)
+        today = date(2023, 3, 1)
+        my_skipped_csv = bursar_transfer.xml_to_csv(xml_missing_amount, today)
+    assert (
+        "Skipping transaction 15216075630006761, unrecoginzed fine fee type: foo"
+        in caplog.text
+    )
+    # We should have skipped one line in the file and so there should be
+    # one fewer lines in the output file
+    my_csv = bursar_transfer.xml_to_csv(test_xml, today)
+    my_csv.seek(0)
+    my_skipped_csv.seek(0)
+    assert len(my_skipped_csv.readlines()) == len(my_csv.readlines()) - 1
+
+
 def test_xml_to_csv(test_xml: str) -> None:
     with open("tests/fixtures/test.csv", encoding="utf-8") as expected_file:
         today = date(2023, 3, 1)

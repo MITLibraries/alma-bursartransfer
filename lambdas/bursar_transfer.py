@@ -163,10 +163,19 @@ def xml_to_csv(alma_xml: str, today: date) -> StringIO:
                 "xb:itemBarcode", default=None, namespaces=name_space
             )
 
-            fine_fee_type = translate_fine_fee_type(
-                fine_fee.findtext("xb:fineFeeType", default="", namespaces=name_space)
-            )
-            csv_line["DESCRIPTION"] = f"{fine_fee_type} {barcode}"[:30]
+            try:
+                fine_fee_type = translate_fine_fee_type(
+                    fine_fee.findtext(
+                        "xb:fineFeeType", default="", namespaces=name_space
+                    )
+                )
+                csv_line["DESCRIPTION"] = f"{fine_fee_type} {barcode}"[:30]
+            except ValueError as error:
+                transaction_id = fine_fee.findtext(
+                    "xb:bursarTransactionId", default="", namespaces=name_space
+                )
+                logger.error("Skipping transaction %s, %s", transaction_id, error)
+                continue
 
             csv_line["AMOUNT"] = fine_fee.findtext(
                 "xb:compositeSum/xb:sum", default=None, namespaces=name_space
