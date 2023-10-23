@@ -118,6 +118,16 @@ def test_xml_to_csv_error_if_missing_field(test_xml: str) -> None:
     assert "One or more required values are missing from the export file" in str(error)
 
 
+def test_xml_description_field_character_limit(test_xml: str) -> None:
+    xml_long_barcode = test_xml.replace("39080036507785", "39080036507785FOO")
+    with open("tests/fixtures/test.csv", encoding="utf-8") as expected_file:
+        today = date(2023, 3, 1)
+        assert (
+            bursar_transfer.xml_to_csv(xml_long_barcode, today).getvalue()
+            == expected_file.read()
+        )
+
+
 def test_xml_to_csv_skip_line_if_unknown_fine_fee_type(test_xml: str, caplog) -> None:
     with caplog.at_level(logging.DEBUG, logger="lambdas.bursar_transfer"):
         xml_missing_amount = test_xml.replace("OVERDUEFINE", "foo", 1)
