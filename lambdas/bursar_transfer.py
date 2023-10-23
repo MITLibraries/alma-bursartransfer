@@ -107,7 +107,7 @@ def translate_fine_fee_type(
 ) -> str:
     """Convert fine fee code into human readable string.
 
-    raises an error if the code does not have a mapping.
+    Raises an error if the code does not have a mapping.
 
     Only the fine / fee types  we specify in alma should appear
     in the export file, so if an error occurs here it may mean
