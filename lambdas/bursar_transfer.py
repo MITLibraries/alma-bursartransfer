@@ -118,7 +118,7 @@ def translate_fine_fee_type(
         return "Library overdue"
     if "lost" in fine_fee_type.lower():
         return "Library lost"
-    raise ValueError(f"unrecoginzed fine fee type: {fine_fee_type}")
+    raise ValueError(f"Unrecoginzed fine fee type: {fine_fee_type}")
 
 
 def xml_to_csv(alma_xml: str, today: date) -> StringIO:
@@ -174,7 +174,7 @@ def xml_to_csv(alma_xml: str, today: date) -> StringIO:
                 transaction_id = fine_fee.findtext(
                     "xb:bursarTransactionId", default="", namespaces=name_space
                 )
-                logger.error("Skipping transaction %s, %s", transaction_id, error)
+                logger.error("Skipping transaction %s. %s", transaction_id, error)
                 continue
 
             csv_line["AMOUNT"] = fine_fee.findtext(
