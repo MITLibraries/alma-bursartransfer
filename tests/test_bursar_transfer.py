@@ -97,16 +97,33 @@ def test_billing_term(test_date, expected) -> None:
 
 
 @pytest.mark.parametrize(
-    "test_type,expected",
-    [("TEST Overdue", "Library overdue"), ("test lost", "Library lost")],
+    "test_input,expected",
+    [
+        (
+            {"type": "TEST Overdue", "barcode": "12345"},
+            "Library overdue 12345",
+        ),
+        ({"type": "TEST LOST", "barcode": "12345"}, "Library lost 12345"),
+    ],
 )
-def test_translate_fine_fee_type_success(test_type, expected) -> None:
-    assert bursar_transfer.translate_fine_fee_type(test_type) == expected
+def test_generate_description(test_input, expected) -> None:
+    assert (
+        bursar_transfer.generate_description(test_input["type"], test_input["barcode"])
+        == expected
+    )
 
 
-def test_translate_fine_fee_type_fail():
+def test_generate_description_truncates_to_thirty_characters() -> None:
+    barcode_is_extra_long = "a" * 30
+    assert (
+        len(bursar_transfer.generate_description("OVERDUE-FOO", barcode_is_extra_long))
+        == 30
+    )
+
+
+def test_translate_unrecognized_fine_fee_type_fails():
     with pytest.raises(ValueError) as error:
-        bursar_transfer.translate_fine_fee_type("foo")
+        bursar_transfer.generate_description("foo", "12345")
     assert "Unrecoginzed fine fee type: foo" in str(error)
 
 
@@ -116,16 +133,6 @@ def test_xml_to_csv_error_if_missing_field(test_xml: str) -> None:
     with pytest.raises(ValueError) as error:
         bursar_transfer.xml_to_csv(xml_missing_amount, today)
     assert "One or more required values are missing from the export file" in str(error)
-
-
-def test_xml_description_field_character_limit(test_xml: str) -> None:
-    xml_long_barcode = test_xml.replace("39080036507785", "39080036507785FOO")
-    with open("tests/fixtures/test.csv", encoding="utf-8") as expected_file:
-        today = date(2023, 3, 1)
-        assert (
-            bursar_transfer.xml_to_csv(xml_long_barcode, today).getvalue()
-            == expected_file.read()
-        )
 
 
 def test_xml_to_csv_skip_line_if_unknown_fine_fee_type(test_xml: str, caplog) -> None:
