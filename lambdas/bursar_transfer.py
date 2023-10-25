@@ -9,6 +9,7 @@ from xml.etree import ElementTree  # nosec
 
 import boto3
 import sentry_sdk
+from dateutil.parser import parse as date_parser
 from mypy_boto3_s3 import S3Client
 from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
 
@@ -102,6 +103,29 @@ def billing_term(today: date) -> str:
     return f"{term_year}{term_code}"
 
 
+def generate_description(fine_fee_type: str, barcode: str) -> str:
+    """Generate the value for the output .csv DESCRIPTION field.
+
+    The DESCRIPTION field has a limit of 30 characters, so we truncate
+    to that.
+
+    Raises an error if the fine_fee_type does not have a mapping.
+
+    Only the fine / fee types we specify in alma should appear
+    in the export file, so if an error occurs here it may mean
+    that an unexpected change has been made in the Alma bursar
+    integration config.
+    """
+    if "overdue" in fine_fee_type.lower():
+        mapped_type = "Library overdue"
+    elif "lost" in fine_fee_type.lower():
+        mapped_type = "Library lost"
+    else:
+        raise ValueError(f"Unrecoginzed fine fee type: {fine_fee_type}")
+
+    return f"{mapped_type} {barcode}"[:30]
+
+
 def xml_to_csv(alma_xml: str, today: date) -> StringIO:
     """Convert xml from the alma bursar export to a csv.
 
@@ -139,14 +163,34 @@ def xml_to_csv(alma_xml: str, today: date) -> StringIO:
             "xb:patronName", default=None, namespaces=name_space
         )
         for fine_fee in user.iterfind("xb:finefeeList/xb:userFineFee", name_space):
-            csv_line["DETAILCODE"] = "ROLH"  # Not sure how to calculate
-            csv_line["DESCRIPTION"] = fine_fee.findtext(
-                "xb:fineFeeType", default=None, namespaces=name_space
+            csv_line["DETAILCODE"] = "ROLH"
+            barcode = fine_fee.findtext(
+                "xb:itemBarcode", default="", namespaces=name_space
             )
+            fine_fee_type = fine_fee.findtext(
+                "xb:fineFeeType", default="", namespaces=name_space
+            )
+            try:
+                csv_line["DESCRIPTION"] = generate_description(fine_fee_type, barcode)
+            except ValueError as error:
+                transaction_id = fine_fee.findtext(
+                    "xb:bursarTransactionId", default="", namespaces=name_space
+                )
+                logger.error("Skipping transaction %s. %s", transaction_id, error)
+                continue
+
             csv_line["AMOUNT"] = fine_fee.findtext(
                 "xb:compositeSum/xb:sum", default=None, namespaces=name_space
             )
-            csv_line["EFFECTIVEDATE"] = "effective_date"  # Not sure how to calculate
+            csv_line["EFFECTIVEDATE"] = fine_fee.findtext(
+                "xb:lastTransactionDate", default=None, namespaces=name_space
+            )
+            if csv_line["EFFECTIVEDATE"]:
+                csv_line["EFFECTIVEDATE"] = date_parser(
+                    csv_line["EFFECTIVEDATE"]
+                ).strftime(
+                    "%m/%d/%Y"
+                )  # remove the timestamp from the date
             csv_line["BILLINGTERM"] = billing_term(today)
             if all(csv_line.values()):
                 writer.writerow(csv_line)

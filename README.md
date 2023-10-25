@@ -25,17 +25,23 @@ bursar's system.
 
 ## Mapping from Alma to SFS
 
-| Alma                             | SFS csv Field | example                            |
-|----------------------------------|---------------|------------------------------------|
-| user ID type 02                  | MITID         | 12345678                           |
-| Last name, First Name            | STUDENTNAME   | Doe, Jane                          |
-|                                  | DETAILCODE    |                                    |
-| Fine Fee Type                    | DESCRIPTION   | LOSTITEMREPLACEMENTFEE             |
-| Amount owed for the fine or fee  | AMOUNT        | 123.45                             |
-|                                  | EFFECTIVEDATE |                                    |
-| see calculating BILLINGTERM below| BILLINGTERM   |2023FA                              |
+| Alma                             | SFS csv Field               | example                            |
+|----------------------------------|-----------------------------|------------------------------------|
+| user ID type 02                  | MITID                       | 12345678                           |
+| Last name, First Name            | STUDENTNAME                 | Doe, Jane                          |
+| (use CHASS detail code ROLH)     | DETAILCODE                  | ROLH                               |
+| (see calculating DESCRIPTION below)| DESCRIPTION                 | Library lost 99999999999999        |
+| Amount owed for the fine or fee  | AMOUNT                      | 123.45                             |
+| Last Transaction Date            | EFFECTIVEDATE <mm/dd/yyyy>  | 12/31/2023                         |
+| (see calculating BILLINGTERM below)| BILLINGTERM \<YYYYXX\>      | 2023FA                             |
 
-### calculating BILLINGTERM values
+### Calculating DESCRIPTION values
+| fine fee type contains | DESCRIPTION |
+|------------------------|-------------|
+|lost | Library lost [barcode] |
+|overdue | Library overdue [barcode] | 
+
+### Calculating BILLINGTERM values
 
 |current month (number) is  |BILLINGTERM  |
 |-------------              |-------------|
