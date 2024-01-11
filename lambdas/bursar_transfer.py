@@ -9,7 +9,6 @@ from xml.etree import ElementTree  # nosec
 
 import boto3
 import sentry_sdk
-from dateutil.parser import parse as date_parser
 from mypy_boto3_s3 import S3Client
 from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
 

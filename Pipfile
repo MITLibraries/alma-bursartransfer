@@ -7,7 +7,6 @@ name = "pypi"
 sentry-sdk = "*"
 boto3 = "*"
 boto3-stubs = {extras = ["s3"], version = "*"}
-python-dateutil = "*"
 
 [dev-packages]
 bandit = "*"
