@@ -9,7 +9,6 @@ from xml.etree import ElementTree  # nosec
 
 import boto3
 import sentry_sdk
-from dateutil.parser import parse as date_parser
 from mypy_boto3_s3 import S3Client
 from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
 
@@ -182,15 +181,7 @@ def xml_to_csv(alma_xml: str, today: date) -> StringIO:
             csv_line["AMOUNT"] = fine_fee.findtext(
                 "xb:compositeSum/xb:sum", default=None, namespaces=name_space
             )
-            csv_line["EFFECTIVEDATE"] = fine_fee.findtext(
-                "xb:lastTransactionDate", default=None, namespaces=name_space
-            )
-            if csv_line["EFFECTIVEDATE"]:
-                csv_line["EFFECTIVEDATE"] = date_parser(
-                    csv_line["EFFECTIVEDATE"]
-                ).strftime(
-                    "%m/%d/%Y"
-                )  # remove the timestamp from the date
+            csv_line["EFFECTIVEDATE"] = today.strftime("%m/%d/%Y")
             csv_line["BILLINGTERM"] = billing_term(today)
             if all(csv_line.values()):
                 writer.writerow(csv_line)

@@ -32,7 +32,7 @@ bursar's system.
 | (use CHASS detail code ROLH)     | DETAILCODE                  | ROLH                               |
 | (see calculating DESCRIPTION below)| DESCRIPTION                 | Library lost 99999999999999        |
 | Amount owed for the fine or fee  | AMOUNT                      | 123.45                             |
-| Last Transaction Date            | EFFECTIVEDATE <mm/dd/yyyy>  | 12/31/2023                         |
+| Date the export is run (i.e. today)          | EFFECTIVEDATE <mm/dd/yyyy>  | 12/31/2023                         |
 | (see calculating BILLINGTERM below)| BILLINGTERM \<YYYYXX\>      | 2023FA                             |
 
 ### Calculating DESCRIPTION values
