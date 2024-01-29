@@ -115,10 +115,19 @@ def generate_description(fine_fee_type: str, barcode: str) -> str:
     that an unexpected change has been made in the Alma bursar
     integration config.
     """
-    if "overdue" in fine_fee_type.lower():
-        mapped_type = "Library overdue"
-    elif "lost" in fine_fee_type.lower():
+    if fine_fee_type == "DAMAGEDITEMFINE":
+        mapped_type = "Library damaged"
+    elif fine_fee_type == "LOSTITEMPROCESSFEE":
         mapped_type = "Library lost"
+    elif fine_fee_type == "LOSTITEMREPLACEMENTFEE":
+        mapped_type = "Library repl"
+    elif fine_fee_type == "OVERDUEFINE":
+        mapped_type = "Library overdue"
+    elif fine_fee_type == "OTHER":
+        mapped_type = "Library other"
+    elif fine_fee_type == "RECALLEDOVERDUEFINE":
+        mapped_type = "Library recalled"
+
     else:
         raise ValueError(f"Unrecoginzed fine fee type: {fine_fee_type}")
 

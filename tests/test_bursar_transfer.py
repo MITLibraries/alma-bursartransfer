@@ -99,11 +99,12 @@ def test_billing_term(test_date, expected) -> None:
 @pytest.mark.parametrize(
     "test_input,expected",
     [
-        (
-            {"type": "TEST Overdue", "barcode": "12345"},
-            "Library overdue 12345",
-        ),
-        ({"type": "TEST LOST", "barcode": "12345"}, "Library lost 12345"),
+        ({"type": "OVERDUEFINE", "barcode": "12345"}, "Library overdue 12345"),
+        ({"type": "LOSTITEMREPLACEMENTFEE", "barcode": "12345"}, "Library repl 12345"),
+        ({"type": "LOSTITEMPROCESSFEE", "barcode": "12345"}, "Library lost 12345"),
+        ({"type": "RECALLEDOVERDUEFINE", "barcode": "12345"}, "Library recalled 12345"),
+        ({"type": "DAMAGEDITEMFINE", "barcode": "12345"}, "Library damaged 12345"),
+        ({"type": "OTHER", "barcode": "12345"}, "Library other 12345"),
     ],
 )
 def test_generate_description(test_input, expected) -> None:
@@ -116,7 +117,7 @@ def test_generate_description(test_input, expected) -> None:
 def test_generate_description_truncates_to_thirty_characters() -> None:
     barcode_is_extra_long = "a" * 30
     assert (
-        len(bursar_transfer.generate_description("OVERDUE-FOO", barcode_is_extra_long))
+        len(bursar_transfer.generate_description("OVERDUEFINE", barcode_is_extra_long))
         == 30
     )
 
@@ -198,8 +199,8 @@ def test_lambda_handler_success(event_data, caplog) -> None:
         f"Lambda handler starting with event: {json.dumps(event_data)}" in caplog.text
     )
 
-    records = 6
-    total_charges = 539.72
+    records = 10
+    total_charges = 579.72
     response = bursar_transfer.lambda_handler(event_data, {})
     assert f"Bursar csv available for download at {csv_location}" in caplog.text
     assert response == {
