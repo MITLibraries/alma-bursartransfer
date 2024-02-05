@@ -16,10 +16,10 @@ coveralls = "*"
 mypy = "*"
 pylama = {extras = ["all"], version = "*"}
 pytest = "*"
-moto = {extras = ["s3"], version = "*"}
 types-urllib3 = "*"
 types-requests = "*"
 types-python-dateutil = "*"
+moto = {extras = ["s3"], version = "*"}
 
 [requires]
 python_version = "3.9"
