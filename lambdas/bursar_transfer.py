@@ -107,31 +107,18 @@ def generate_description(fine_fee_type: str, barcode: str) -> str:
 
     The DESCRIPTION field has a limit of 30 characters, so we truncate
     to that.
-
-    Raises an error if the fine_fee_type does not have a mapping.
-
-    Only the fine / fee types we specify in alma should appear
-    in the export file, so if an error occurs here it may mean
-    that an unexpected change has been made in the Alma bursar
-    integration config.
     """
-    if fine_fee_type == "DAMAGEDITEMFINE":
-        mapped_type = "Library damaged"
-    elif fine_fee_type == "LOSTITEMPROCESSFEE":
-        mapped_type = "Library lost"
-    elif fine_fee_type == "LOSTITEMREPLACEMENTFEE":
-        mapped_type = "Library repl"
-    elif fine_fee_type == "OVERDUEFINE":
-        mapped_type = "Library overdue"
-    elif fine_fee_type == "OTHER":
-        mapped_type = "Library other"
-    elif fine_fee_type == "RECALLEDOVERDUEFINE":
-        mapped_type = "Library recalled"
+    fine_fee_type_mapping = {
+        "DAMAGEDITEMFINE": "Library damaged",
+        "LOSTITEMPROCESSFEE": "Library lost",
+        "LOSTITEMREPLACEMENTFEE": "Library repl",
+        "OVERDUEFINE": "Library overdue",
+        "OTHER": "Library other",
+        "RECALLEDOVERDUEFINE": "Library recalled",
+    }
 
-    else:
-        raise ValueError(f"Unrecoginzed fine fee type: {fine_fee_type}")
-
-    return f"{mapped_type} {barcode}"[:30]
+    description = fine_fee_type_mapping[fine_fee_type]
+    return f"{description} {barcode}"[:30]
 
 
 def xml_to_csv(alma_xml: str, today: date) -> StringIO:
@@ -178,13 +165,20 @@ def xml_to_csv(alma_xml: str, today: date) -> StringIO:
             fine_fee_type = fine_fee.findtext(
                 "xb:fineFeeType", default="", namespaces=name_space
             )
-            try:
+            try:  # try to get the mapped description for the fine fee type code.
                 csv_line["DESCRIPTION"] = generate_description(fine_fee_type, barcode)
-            except ValueError as error:
+            except (
+                KeyError
+            ) as error:  # There was no mapping for the fine fee type code.
+                # get the transaction ID so we can log it as part of the error
                 transaction_id = fine_fee.findtext(
                     "xb:bursarTransactionId", default="", namespaces=name_space
                 )
-                logger.error("Skipping transaction %s. %s", transaction_id, error)
+                logger.error(
+                    "Skipping transaction %s. Unrecognized fine fee type: %s",
+                    transaction_id,
+                    error.args[0],
+                )
                 continue
 
             csv_line["AMOUNT"] = fine_fee.findtext(

@@ -123,9 +123,10 @@ def test_generate_description_truncates_to_thirty_characters() -> None:
 
 
 def test_translate_unrecognized_fine_fee_type_fails():
-    with pytest.raises(ValueError) as error:
+    with pytest.raises(KeyError) as error:
         bursar_transfer.generate_description("foo", "12345")
-    assert "Unrecoginzed fine fee type: foo" in str(error)
+    assert error.type is KeyError
+    assert error.value.args[0] == "foo"
 
 
 def test_xml_to_csv_error_if_missing_field(test_xml: str) -> None:
@@ -142,7 +143,7 @@ def test_xml_to_csv_skip_line_if_unknown_fine_fee_type(test_xml: str, caplog) ->
         today = date(2023, 3, 1)
         my_skipped_csv = bursar_transfer.xml_to_csv(xml_missing_amount, today)
     assert (
-        "Skipping transaction 15216075630006761. Unrecoginzed fine fee type: foo"
+        "Skipping transaction 15216075630006761. Unrecognized fine fee type: foo"
         in caplog.text
     )
     # We should have skipped one line in the file and so there should be
