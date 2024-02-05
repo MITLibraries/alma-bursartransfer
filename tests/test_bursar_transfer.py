@@ -99,11 +99,12 @@ def test_billing_term(test_date, expected) -> None:
 @pytest.mark.parametrize(
     "test_input,expected",
     [
-        (
-            {"type": "TEST Overdue", "barcode": "12345"},
-            "Library overdue 12345",
-        ),
-        ({"type": "TEST LOST", "barcode": "12345"}, "Library lost 12345"),
+        ({"type": "OVERDUEFINE", "barcode": "12345"}, "Library overdue 12345"),
+        ({"type": "LOSTITEMREPLACEMENTFEE", "barcode": "12345"}, "Library repl 12345"),
+        ({"type": "LOSTITEMPROCESSFEE", "barcode": "12345"}, "Library lost 12345"),
+        ({"type": "RECALLEDOVERDUEFINE", "barcode": "12345"}, "Library recalled 12345"),
+        ({"type": "DAMAGEDITEMFINE", "barcode": "12345"}, "Library damaged 12345"),
+        ({"type": "OTHER", "barcode": "12345"}, "Library other 12345"),
     ],
 )
 def test_generate_description(test_input, expected) -> None:
@@ -116,15 +117,16 @@ def test_generate_description(test_input, expected) -> None:
 def test_generate_description_truncates_to_thirty_characters() -> None:
     barcode_is_extra_long = "a" * 30
     assert (
-        len(bursar_transfer.generate_description("OVERDUE-FOO", barcode_is_extra_long))
+        len(bursar_transfer.generate_description("OVERDUEFINE", barcode_is_extra_long))
         == 30
     )
 
 
 def test_translate_unrecognized_fine_fee_type_fails():
-    with pytest.raises(ValueError) as error:
+    with pytest.raises(KeyError) as error:
         bursar_transfer.generate_description("foo", "12345")
-    assert "Unrecoginzed fine fee type: foo" in str(error)
+    assert error.type is KeyError
+    assert error.value.args[0] == "foo"
 
 
 def test_xml_to_csv_error_if_missing_field(test_xml: str) -> None:
@@ -141,7 +143,7 @@ def test_xml_to_csv_skip_line_if_unknown_fine_fee_type(test_xml: str, caplog) ->
         today = date(2023, 3, 1)
         my_skipped_csv = bursar_transfer.xml_to_csv(xml_missing_amount, today)
     assert (
-        "Skipping transaction 15216075630006761. Unrecoginzed fine fee type: foo"
+        "Skipping transaction 15216075630006761. Unrecognized fine fee type: foo"
         in caplog.text
     )
     # We should have skipped one line in the file and so there should be
@@ -198,8 +200,8 @@ def test_lambda_handler_success(event_data, caplog) -> None:
         f"Lambda handler starting with event: {json.dumps(event_data)}" in caplog.text
     )
 
-    records = 6
-    total_charges = 539.72
+    records = 10
+    total_charges = 579.72
     response = bursar_transfer.lambda_handler(event_data, {})
     assert f"Bursar csv available for download at {csv_location}" in caplog.text
     assert response == {

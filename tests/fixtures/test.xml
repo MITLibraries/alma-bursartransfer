@@ -185,6 +185,114 @@
 						</xb:compositeSum>
 						<xb:bursarTransactionId>15216075690006761</xb:bursarTransactionId>
 					</xb:userFineFee>
+					<xb:userFineFee>
+						<xb:fineFeeComment xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:fineFeeType>OTHER</xb:fineFeeType>
+						<xb:owneredEntity>
+							<xb:InstitutionId>6761</xb:InstitutionId>
+							<xb:libraryId>161686070006761</xb:libraryId>
+							<xb:libraryCode>RTC</xb:libraryCode>
+						</xb:owneredEntity>
+						<xb:lastTransactionDate>09/12/2023 15:23:25</xb:lastTransactionDate>
+						<xb:itemTitle>Case studies of child play areas and child support facilities
+							: travel and field research report /</xb:itemTitle>
+						<xb:itemCallNumebr>HV854.C56</xb:itemCallNumebr>
+						<xb:itemLibrary>Rotch Library</xb:itemLibrary>
+						<xb:itemLocation>Stacks</xb:itemLocation>
+						<xb:itemInternalLocation>Stacks</xb:itemInternalLocation>
+						<xb:itemDueDate xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:itemBarcode>39080002699707</xb:itemBarcode>
+						<xb:compositeSum>
+							<xb:currency>USD</xb:currency>
+							<xb:sum>10</xb:sum>
+							<xb:vat xsi:nil="true"
+								xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						</xb:compositeSum>
+						<xb:bursarTransactionId>15216075690006761</xb:bursarTransactionId>
+					</xb:userFineFee>
+					<xb:userFineFee>
+						<xb:fineFeeComment xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:fineFeeType>DAMAGEDITEMFINE</xb:fineFeeType>
+						<xb:owneredEntity>
+							<xb:InstitutionId>6761</xb:InstitutionId>
+							<xb:libraryId>161686070006761</xb:libraryId>
+							<xb:libraryCode>RTC</xb:libraryCode>
+						</xb:owneredEntity>
+						<xb:lastTransactionDate>09/12/2023 15:23:25</xb:lastTransactionDate>
+						<xb:itemTitle>Case studies of child play areas and child support facilities
+							: travel and field research report /</xb:itemTitle>
+						<xb:itemCallNumebr>HV854.C56</xb:itemCallNumebr>
+						<xb:itemLibrary>Rotch Library</xb:itemLibrary>
+						<xb:itemLocation>Stacks</xb:itemLocation>
+						<xb:itemInternalLocation>Stacks</xb:itemInternalLocation>
+						<xb:itemDueDate xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:itemBarcode>39080002699707</xb:itemBarcode>
+						<xb:compositeSum>
+							<xb:currency>USD</xb:currency>
+							<xb:sum>10</xb:sum>
+							<xb:vat xsi:nil="true"
+								xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						</xb:compositeSum>
+						<xb:bursarTransactionId>15216075690006761</xb:bursarTransactionId>
+					</xb:userFineFee>
+					<xb:userFineFee>
+						<xb:fineFeeComment xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:fineFeeType>RECALLEDOVERDUEFINE</xb:fineFeeType>
+						<xb:owneredEntity>
+							<xb:InstitutionId>6761</xb:InstitutionId>
+							<xb:libraryId>161686070006761</xb:libraryId>
+							<xb:libraryCode>RTC</xb:libraryCode>
+						</xb:owneredEntity>
+						<xb:lastTransactionDate>09/12/2023 15:23:25</xb:lastTransactionDate>
+						<xb:itemTitle>Case studies of child play areas and child support facilities
+							: travel and field research report /</xb:itemTitle>
+						<xb:itemCallNumebr>HV854.C56</xb:itemCallNumebr>
+						<xb:itemLibrary>Rotch Library</xb:itemLibrary>
+						<xb:itemLocation>Stacks</xb:itemLocation>
+						<xb:itemInternalLocation>Stacks</xb:itemInternalLocation>
+						<xb:itemDueDate xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:itemBarcode>39080002699707</xb:itemBarcode>
+						<xb:compositeSum>
+							<xb:currency>USD</xb:currency>
+							<xb:sum>10</xb:sum>
+							<xb:vat xsi:nil="true"
+								xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						</xb:compositeSum>
+						<xb:bursarTransactionId>15216075690006761</xb:bursarTransactionId>
+					</xb:userFineFee>
+					<xb:userFineFee>
+						<xb:fineFeeComment xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:fineFeeType>LOSTITEMPROCESSFEE</xb:fineFeeType>
+						<xb:owneredEntity>
+							<xb:InstitutionId>6761</xb:InstitutionId>
+							<xb:libraryId>161686070006761</xb:libraryId>
+							<xb:libraryCode>RTC</xb:libraryCode>
+						</xb:owneredEntity>
+						<xb:lastTransactionDate>09/12/2023 15:23:25</xb:lastTransactionDate>
+						<xb:itemTitle>Case studies of child play areas and child support facilities
+							: travel and field research report /</xb:itemTitle>
+						<xb:itemCallNumebr>HV854.C56</xb:itemCallNumebr>
+						<xb:itemLibrary>Rotch Library</xb:itemLibrary>
+						<xb:itemLocation>Stacks</xb:itemLocation>
+						<xb:itemInternalLocation>Stacks</xb:itemInternalLocation>
+						<xb:itemDueDate xsi:nil="true"
+							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<xb:itemBarcode>39080002699707</xb:itemBarcode>
+						<xb:compositeSum>
+							<xb:currency>USD</xb:currency>
+							<xb:sum>10</xb:sum>
+							<xb:vat xsi:nil="true"
+								xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						</xb:compositeSum>
+						<xb:bursarTransactionId>15216075690006761</xb:bursarTransactionId>
+					</xb:userFineFee>
 				</xb:finefeeList>
 			</xb:userExportedFineFeesList>
 		</xb:userExportedList>
