@@ -87,13 +87,10 @@ def billing_term(today: date) -> str:
     """
     year = int(today.strftime("%Y"))
     month = today.month
-    if month in [1, 2]:
-        term_code = "FA"
-        term_year = year
-    elif month in [3, 4, 5, 6]:
+    if month in [1, 2, 3, 4]:
         term_code = "SP"
         term_year = year
-    elif month in [7, 8]:
+    elif month in [5, 6, 7]:
         term_code = "SU"
         term_year = year
     else:

@@ -60,12 +60,21 @@ uploaded to the bursar's system.
 
 ### Calculating BILLINGTERM values
 
-| current month (number) is | BILLINGTERM |
-| ------------------------- | ----------- |
-| 1 or 2                    | \<yyyy>FA   |
-| 3, 4, 5 or 6              | \<yyyy>SP   |
-| 7 or 8                    | \<yyyy>SU   |
-| 9, 10, 11 or 12           | \<yyyy+1>FA |
+`BILLINGTERM` values have two parts, a 4 digit year \<YYYY> followed by a 2 digit
+term code. One of:
+
+- `SP` = Spring
+- `SU` = Summer
+- `FA` = Fall
+
+`BILLINGTERM` is calculated based on the current month and year when the Alma
+bursar export is run. At MIT, the year used in the Fall `BILLINGTERM` should be the upcoming year, not the current year. For example, for exports run in calendar year `2023`:
+
+| current month (number) is | year    | term code | BILLINGTERM |
+| ------------------------- | ------- | --------- | ----------- |
+| 1, 2, 3, 4                | 2023    | SP        | 2023SP      |
+| 5, 6, 7                    | 2023    | SU        | 2023SU      |
+| 8, 9, 10, 11 or 12     | 2023 +1 | FA        | 2024FA      |
 
 ## Local Testing
 
