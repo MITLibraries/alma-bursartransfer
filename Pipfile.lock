@@ -29,11 +29,12 @@
                 "s3"
             ],
             "hashes": [
-                "sha256:ae92d08229ee1891b5f6612231e1da35aa535f41348488a38993e2fab7366c4f",
-                "sha256:d55d53cca1bfb4b388068e2b56d58940eb219d472ebc5d30ae77d6752ea02ed7"
+                "sha256:8f0706c13e3263f23af0f4912f4dc3a9cef266dc83778e93c395e6f10bd3e832",
+                "sha256:fd01ecbd599bdfbc0933d2537ec33beddc9f93399b395e557f46aadad17a0726"
             ],
             "index": "pypi",
-            "version": "==1.34.45"
+            "markers": "python_version >= '3.8'",
+            "version": "==1.34.46"
         },
         "botocore": {
             "hashes": [
