@@ -29,11 +29,12 @@
                 "s3"
             ],
             "hashes": [
-                "sha256:ae92d08229ee1891b5f6612231e1da35aa535f41348488a38993e2fab7366c4f",
-                "sha256:d55d53cca1bfb4b388068e2b56d58940eb219d472ebc5d30ae77d6752ea02ed7"
+                "sha256:28274392b14c5382fa132aeb1f1effdc8216ed9f33ea7305ef19403645f910ab",
+                "sha256:d15c6e7e55ce50b632c390548bd6e8f9f8f32cb44b01fd82e3faa8bda549e26a"
             ],
             "index": "pypi",
-            "version": "==1.34.45"
+            "markers": "python_version >= '3.8'",
+            "version": "==1.34.77"
         },
         "botocore": {
             "hashes": [
@@ -45,11 +46,11 @@
         },
         "botocore-stubs": {
             "hashes": [
-                "sha256:15601eb452d2393e21e2a016e0c8d6a6c1cc1532dd51f0a93700fd8ad33dd270",
-                "sha256:870ecc41f4559dab592b0e3d5d52950e2c35211cfbbedf5b05cb9ca760fb291b"
+                "sha256:0c3835c775db1387246c1ba8063b197604462fba8603d9b36b5dc60297197b2f",
+                "sha256:463248fd1d6e7b68a0c57bdd758d04c6bd0c5c2c3bfa81afdf9d64f0930b59bc"
             ],
             "markers": "python_version >= '3.8' and python_version < '4.0'",
-            "version": "==1.34.45"
+            "version": "==1.34.69"
         },
         "certifi": {
             "hashes": [
@@ -108,11 +109,11 @@
         },
         "types-awscrt": {
             "hashes": [
-                "sha256:06a859189a329ca8e66d56ceeef2391488e39b878fbd2141f115eab4d416fe22",
-                "sha256:f61a120d3e98ee1387bc5ca4b93437f258cc5c2af1f55f8634ec4cee5729f178"
+                "sha256:61811bbf4de95248939f9276a434be93d2b95f6ccfe8aa94e56999e9778cfcc2",
+                "sha256:79d5bfb01f64701b6cf442e89a37d9c4dc6dbb79a46f2f611739b2418d30ecfd"
             ],
             "markers": "python_version >= '3.7' and python_version < '4.0'",
-            "version": "==0.20.3"
+            "version": "==0.20.5"
         },
         "types-s3transfer": {
             "hashes": [
@@ -124,11 +125,11 @@
         },
         "typing-extensions": {
             "hashes": [
-                "sha256:23478f88c37f27d76ac8aee6c905017a143b0b1b886c3c9f66bc2fd94f9f5783",
-                "sha256:af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd"
+                "sha256:69b1a937c3a517342112fb4c6df7e72fc39a38e7891a5730ed4985b5214b5475",
+                "sha256:b0abd7c89e8fb96f98db18d86106ff1d90ab692004eb746cf6eda2682f91b3cb"
             ],
             "markers": "python_version < '3.12'",
-            "version": "==4.9.0"
+            "version": "==4.10.0"
         },
         "urllib3": {
             "hashes": [
