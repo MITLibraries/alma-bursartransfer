@@ -12,28 +12,21 @@ uploaded to the bursar's system.
 
 ## Required ENV
 
-- `SOURCE_BUCKET` = The bucket containing the fine and fee data exported from
-  Alma.
-- `SOURCE_PREFIX` = The prefix of the source object key within the source
-  bucket, up to, but not including the hyphen before the job id. This will look
-  something like
-  `[s3 source folder]/[s3 source subfolder]/[bursar integration profile code from alma]`.
-  The bursar integration's _profile code_ in Alma is used as the start of the
-  filename that Alma exports.
-- `TARGET_BUCKET` = The bucket where the transformed object will be deposited.
-- `TARGET_PREFIX` = Prefix of the target object key within target bucket. This
-  will look something like
-  `[s3 target folder]/[s3 target subfolder]/[beginning of target filename]`
-- `WORKSPACE` = Set to `dev` for local development, this will be set to `stage`
-  and `prod` in those environments by Terraform.
+```text
+WORKSPACE=# Set to `dev` for local development, this will be set to `stage` and `prod` in those environments by Terraform.
+SOURCE_BUCKET=# The bucket containing the fine and fee data exported from Alma.
+SOURCE_PREFIX=# The prefix of the source object key within the source bucket, up to, but not including the hyphen before the job id. This will look something like `[s3 source folder]/[s3 source subfolder]/[bursar integration profile code from alma]`. The bursar integration's _profile code_ in Alma is used as the start of the filename that Alma exports.
+TARGET_BUCKET=# The bucket where the transformed object will be deposited.
+TARGET_PREFIX=# Prefix of the target object key within target bucket. This will look something like `[s3 target folder]/[s3 target subfolder]/[beginning of target filename]`
+```
 
 ## Optional ENV
 
-- `SENTRY_DSN` = If set to a valid Sentry DSN, enables Sentry exception
-  monitoring. This is not needed for local development.
-- `LOG_LEVEL` = Set to a valid Python logging level (e.g. DEBUG,
-  case-insensitive) if desired. Can also be passed as an option directly to the
-  ccslips command. Defaults to INFO if not set or passed to the command.
+```text
+SENTRY_DSN=# If set to a valid Sentry DSN, enables Sentry exception monitoring. This is not needed for local development.
+LOG_LEVEL=# Set to a valid Python logging level (e.g. DEBUG, case-insensitive) if desired. Can also be passed as an option directly to the ccslips command. Defaults to INFO if not set or passed to the command.
+```
+
 
 ## Mapping from Alma to SFS
 

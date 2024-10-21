@@ -1,4 +1,5 @@
-import os
+# ruff: noqa: PT004
+
 
 import boto3
 import pytest
@@ -6,22 +7,20 @@ from moto import mock_aws
 
 
 @pytest.fixture(autouse=True)
-def aws_credentials():
-    os.environ["AWS_ACCESS_KEY_ID"] = "testing"
-    os.environ["AWS_SECRET_ACCESS_KEY"] = "testing"
-    os.environ["AWS_SECURITY_TOKEN"] = "testing"
-    os.environ["AWS_SESSION_TOKEN"] = "testing"
+def aws_credentials(monkeypatch):
+    monkeypatch.setenv("AWS_ACCESS_KEY_ID", "testing")
+    monkeypatch.setenv("AWS_SECRET_ACCESS_KEY", "testing")
+    monkeypatch.setenv("AWS_SECURITY_TOKEN", "testing")
+    monkeypatch.setenv("AWS_SESSION_TOKEN", "testing")
 
 
 @pytest.fixture(autouse=True)
-def test_env():
-    os.environ = {
-        "SOURCE_BUCKET": "test-alma-bucket",
-        "TARGET_BUCKET": "test-pickup-bucket",
-        "WORKSPACE": "test",
-        "SOURCE_PREFIX": "test/source-prefix/bursar_export_to_test",
-        "TARGET_PREFIX": "test/target-prefix/bursar_file_ready_to_pickup",
-    }
+def test_env(monkeypatch):
+    monkeypatch.setenv("SOURCE_BUCKET", "test-alma-bucket")
+    monkeypatch.setenv("TARGET_BUCKET", "test-pickup-bucket")
+    monkeypatch.setenv("WORKSPACE", "test")
+    monkeypatch.setenv("SOURCE_PREFIX", "test/source-prefix/bursar_export_to_test")
+    monkeypatch.setenv("TARGET_PREFIX", "test/target-prefix/bursar_file_ready_to_pickup")
 
 
 @pytest.fixture(autouse=True)
@@ -61,19 +60,17 @@ def mocked_s3():
         yield client
 
 
-@pytest.fixture()
+@pytest.fixture
 def s3_client():
-    yield boto3.client("s3")
+    return boto3.client("s3")
 
 
-@pytest.fixture()
+@pytest.fixture
 def test_xml() -> str:
     with open("tests/fixtures/test.xml", encoding="utf-8") as file:
-        xml_string = file.read()
-    return xml_string
+        return file.read()
 
 
-@pytest.fixture()
+@pytest.fixture
 def event_data():
-    event = {"job_id": "1234"}
-    return event
+    return {"job_id": "1234"}
