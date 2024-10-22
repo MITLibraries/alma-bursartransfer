@@ -1,11 +1,11 @@
 import csv
+import datetime
 import json
 import logging
 import os
-from datetime import date
 from io import StringIO
 from math import fsum
-from xml.etree import ElementTree  # nosec
+from xml.etree import ElementTree as ET
 
 import boto3
 import sentry_sdk
@@ -15,7 +15,7 @@ from sentry_sdk.integrations.aws_lambda import AwsLambdaIntegration
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 logger.setLevel(os.getenv("LOG_LEVEL", "INFO"))
-TODAY = date.today()
+TODAY = datetime.datetime.now(tz=datetime.UTC).date()
 
 env = os.getenv("WORKSPACE")
 if sentry_dsn := os.getenv("SENTRY_DSN"):
@@ -32,9 +32,7 @@ else:
     logger.info("No Sentry DSN found, exceptions will not be sent to Sentry")
 
 
-def get_key_from_job_id(
-    s3_client: S3Client, bucket: str, prefix_with_job_id: str
-) -> str:
+def get_key_from_job_id(s3_client: S3Client, bucket: str, prefix_with_job_id: str) -> str:
     """Use the Alma bursar transfer job ID to return the corresponding filename in s3.
 
     :param s3_client - a boto S3Client instance
@@ -59,16 +57,18 @@ def get_key_from_job_id(
     try:
         source_key = keys["Contents"][0]["Key"]
     except KeyError as error:
-        raise KeyError(
+        message = (
             f"No files retrieved from bucket '{bucket}'"
             f"with prefix '{prefix_with_job_id}'"
-        ) from error
+        )
+        raise KeyError(message) from error
 
     if len(keys["Contents"]) > 1:
-        raise KeyError(
+        message = (
             f"multiple files retrieved from bucket '{bucket}'"
             f"with prefix '{prefix_with_job_id}'"
         )
+        raise KeyError(message)
 
     return source_key
 
@@ -79,7 +79,7 @@ def get_bursar_export_xml_from_s3(s3_client: S3Client, bucket: str, key: str) ->
     return response["Body"].read().decode("utf-8")
 
 
-def billing_term(today: date) -> str:
+def billing_term(today: datetime.date) -> str:
     """Calculate the appropriate billing term code based on the current date.
 
     See https://mitlibraries.atlassian.net/browse/ENSY-182 for details on bursar's
@@ -118,7 +118,7 @@ def generate_description(fine_fee_type: str, barcode: str) -> str:
     return f"{description} {barcode}"[:30]
 
 
-def xml_to_csv(alma_xml: str, today: date) -> StringIO:
+def xml_to_csv(alma_xml: str, today: datetime.date) -> StringIO:
     """Convert xml from the alma bursar export to a csv.
 
     See https://mitlibraries.atlassian.net/browse/ENSY-182 for details on bursar's
@@ -143,7 +143,7 @@ def xml_to_csv(alma_xml: str, today: date) -> StringIO:
     )
     writer.writeheader()
 
-    root = ElementTree.fromstring(alma_xml)  # nosec
+    root = ET.fromstring(alma_xml)  # noqa: S314
 
     name_space = {"xb": "http://com/exlibris/urm/rep/externalsysfinesfees/xmlbeans"}
     for user in root.iterfind(".//xb:userExportedFineFeesList", name_space):
@@ -164,14 +164,12 @@ def xml_to_csv(alma_xml: str, today: date) -> StringIO:
             )
             try:  # try to get the mapped description for the fine fee type code.
                 csv_line["DESCRIPTION"] = generate_description(fine_fee_type, barcode)
-            except (
-                KeyError
-            ) as error:  # There was no mapping for the fine fee type code.
+            except KeyError as error:  # There was no mapping for the fine fee type code.
                 # get the transaction ID so we can log it as part of the error
                 transaction_id = fine_fee.findtext(
                     "xb:bursarTransactionId", default="", namespaces=name_space
                 )
-                logger.error(
+                logger.error(  # noqa: TRY400
                     "Skipping transaction %s. Unrecognized fine fee type: %s",
                     transaction_id,
                     error.args[0],
@@ -208,7 +206,7 @@ def get_records_and_total_charges(bursar_csv: StringIO) -> tuple[int, float]:
     """
     bursar_csv.seek(0)
     record_count = 0
-    total_charges = float()
+    total_charges = 0.0
 
     for row in csv.DictReader(bursar_csv):
         record_count += 1
@@ -216,7 +214,7 @@ def get_records_and_total_charges(bursar_csv: StringIO) -> tuple[int, float]:
     return record_count, total_charges
 
 
-def lambda_handler(event: dict, context: object) -> dict:  # noqa
+def lambda_handler(event: dict, _context: object) -> dict:
     logger.debug("Lambda handler starting with event: %s", json.dumps(event))
     if not os.getenv("WORKSPACE"):
         raise RuntimeError("Required env variable WORKSPACE is not set")

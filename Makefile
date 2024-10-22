@@ -8,49 +8,63 @@ ECR_URL_DEV:=222053980223.dkr.ecr.us-east-1.amazonaws.com/alma-bursartransfer-de
 FUNCTION_DEV:=alma-bursartransfer-dev
 ### End of Terraform-generated header                                       ###
 
-help: ## Print this message
-	@awk 'BEGIN { FS = ":.*##"; print "Usage:  make <target>\n\nTargets:" } \
-/^[-_[:alpha:]]+:.?*##/ { printf "  %-15s%s\n", $$1, $$2 }' $(MAKEFILE_LIST)
+help: # preview Makefile commands
+	@awk 'BEGIN { FS = ":.*#"; print "Usage:  make <target>\n\nTargets:" } \
+/^[-_[:alpha:]]+:.?*#/ { printf "  %-15s%s\n", $$1, $$2 }' $(MAKEFILE_LIST)
 
+#######################
+# Dependency commands
+#######################
 
-### Dependency commands ###
-
-install: ## Install dependencies and CLI app
+install: # Install Python dependencies
 	pipenv install --dev
+	pipenv run pre-commit install
 
-update: install ## Update all Python dependencies
+update: install # Update Python dependencies
 	pipenv clean
 	pipenv update --dev
 
-### Test commands ###
+######################
+# Unit test commands
+######################
 
-test: ## Run tests and print a coverage report
+test: # Run tests and print a coverage report
 	pipenv run coverage run --source=lambdas -m pytest -vv
 	pipenv run coverage report -m
 
-coveralls: test
+coveralls: test # Write coverage data to an LCOV report
 	pipenv run coverage lcov -o ./coverage/lcov.info
 
-### Code quality and safety commands ###
+####################################
+# Code quality and safety commands
+####################################
 
-lint: bandit black mypy pylama safety ## Run linting, code quality, and safety checks
+lint: black mypy ruff safety # run linters
 
-bandit:
-	pipenv run bandit -r lambdas
-
-black:
+black: # run 'black' linter and print a preview of suggested changes
 	pipenv run black --check --diff .
 
-mypy:
-	pipenv run mypy lambdas
+mypy: # run 'mypy' linter
+	pipenv run mypy .
 
-pylama:
-	pipenv run pylama --options setup.cfg
+ruff: # run 'ruff' linter and print a preview of errors
+	pipenv run ruff check .
 
-safety:
+safety: # check for security vulnerabilities and verify Pipfile.lock is up-to-date
 	pipenv check
 	pipenv verify
 
+lint-apply: black-apply ruff-apply # apply changes to resolve any linting errors
+
+black-apply: # apply changes with 'black'
+	pipenv run black .
+
+ruff-apply: # resolve 'fixable errors' with 'ruff'
+	pipenv run ruff check --fix .
+
+####################################
+# Docker and Terraform commands
+####################################
 
 ### Terraform-generated Developer Deploy Commands for Dev environment ###
 dist-dev: ## Build docker container (intended for developer-based manual build)

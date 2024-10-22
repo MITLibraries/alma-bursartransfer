@@ -1,3 +1,5 @@
+# ruff: noqa: PLR2004
+
 import json
 import logging
 from datetime import date
@@ -12,8 +14,7 @@ def test_bursar_transfer_configures_sentry_if_dsn_present(caplog, monkeypatch) -
     monkeypatch.setenv("SENTRY_DSN", "https://1234567890@00000.ingest.sentry.io/123456")
     reload(bursar_transfer)
     assert (
-        "Sentry DSN found, exceptions will be sent to Sentry with env=test"
-        in caplog.text
+        "Sentry DSN found, exceptions will be sent to Sentry with env=test" in caplog.text
     )
 
 
@@ -76,7 +77,7 @@ def test_get_bursar_export_xml_from_s3(mocked_s3) -> None:
 
 
 @pytest.mark.parametrize(
-    "test_date,expected",
+    ("test_date", "expected"),
     [
         (date(2023, 1, 1), "2023SP"),
         (date(2023, 2, 1), "2023SP"),
@@ -97,7 +98,7 @@ def test_billing_term(test_date, expected) -> None:
 
 
 @pytest.mark.parametrize(
-    "test_input,expected",
+    ("test_input", "expected"),
     [
         ({"type": "OVERDUEFINE", "barcode": "12345"}, "Library overdue 12345"),
         ({"type": "LOSTITEMREPLACEMENTFEE", "barcode": "12345"}, "Library repl 12345"),
@@ -132,9 +133,11 @@ def test_translate_unrecognized_fine_fee_type_fails():
 def test_xml_to_csv_error_if_missing_field(test_xml: str) -> None:
     xml_missing_amount = test_xml.replace("123.45", "")
     today = date(2023, 3, 1)
-    with pytest.raises(ValueError) as error:
+    with pytest.raises(
+        ValueError,
+        match="One or more required values are missing from the export file",
+    ):
         bursar_transfer.xml_to_csv(xml_missing_amount, today)
-    assert "One or more required values are missing from the export file" in str(error)
 
 
 def test_xml_to_csv_skip_line_if_unknown_fine_fee_type(test_xml: str, caplog) -> None:
@@ -158,8 +161,7 @@ def test_xml_to_csv(test_xml: str) -> None:
     with open("tests/fixtures/test.csv", encoding="utf-8") as expected_file:
         today = date(2023, 3, 1)
         assert (
-            bursar_transfer.xml_to_csv(test_xml, today).getvalue()
-            == expected_file.read()
+            bursar_transfer.xml_to_csv(test_xml, today).getvalue() == expected_file.read()
         )
 
 
@@ -176,9 +178,7 @@ def test_put_csv(mocked_s3) -> None:
     retrieved_file = mocked_s3.get_object(
         Bucket="test-pickup-bucket", Key="test/target-prefix/foo.csv"
     )
-    assert (
-        retrieved_file["ResponseMetadata"]["HTTPHeaders"]["content-type"] == "text/csv"
-    )
+    assert retrieved_file["ResponseMetadata"]["HTTPHeaders"]["content-type"] == "text/csv"
     assert retrieved_file["Body"].read().decode("utf-8") == csv_file
 
 
@@ -196,9 +196,7 @@ def test_lambda_handler_success(event_data, caplog) -> None:
     )
     with caplog.at_level(logging.DEBUG, logger="lambdas.bursar_transfer"):
         response = bursar_transfer.lambda_handler(event_data, {})
-    assert (
-        f"Lambda handler starting with event: {json.dumps(event_data)}" in caplog.text
-    )
+    assert f"Lambda handler starting with event: {json.dumps(event_data)}" in caplog.text
 
     records = 10
     total_charges = 579.72

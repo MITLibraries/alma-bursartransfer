@@ -9,17 +9,18 @@ boto3 = "*"
 boto3-stubs = {extras = ["s3"], version = "*"}
 
 [dev-packages]
-bandit = "*"
 black = "*"
 coverage = "*"
 coveralls = "*"
 mypy = "*"
-pylama = {extras = ["all"], version = "*"}
+pre-commit = "*"
 pytest = "*"
+ruff = "*"
 types-urllib3 = "*"
 types-requests = "*"
 types-python-dateutil = "*"
 moto = {extras = ["s3"], version = "*"}
+safety = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.12"
