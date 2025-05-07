@@ -21,6 +21,7 @@ types-requests = "*"
 types-python-dateutil = "*"
 moto = {extras = ["s3"], version = "*"}
 safety = "*"
+pip-audit = "*"
 
 [requires]
 python_version = "3.12"
