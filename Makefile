@@ -122,15 +122,13 @@ update-lambda-dev: # Updates the lambda with whatever is the most recent image i
 ####################################
 # SAM Lambda
 ####################################
-# NOTE: these targets require tests/sam/template.yaml, which does not yet
-# exist in this repo. Add a SAM template before relying on sam-build/sam-invoke.
 
 sam-build: # SAM: Build SAM image for running Lambda locally
 	sam build --template tests/sam/template.yaml
 
 sam-invoke: # SAM: Invoke lambda directly
-	echo '{"msg":"in a bottle"}' \
-		| sam local invoke -e -
+	echo '{"job_id":"12345678"}' \
+		| sam local invoke -e - --env-vars tests/sam/env.json
 
 ### Manual shortcuts for deploying to Stage in an emergency. Requires        ###
 ###   ECR_NAME_STAGE, ECR_URL_STAGE, and FUNCTION_STAGE environment          ###

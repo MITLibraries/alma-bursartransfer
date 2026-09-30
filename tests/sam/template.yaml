@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Local SAM testing template for the Alma bursar transfer Lambda.
+  Not used for deployment; deploys are handled by the ECR/Terraform workflows.
+
+Parameters:
+  Workspace:
+    Type: String
+    Default: dev
+  SourceBucket:
+    Type: String
+    Default: test-alma-bucket
+  SourcePrefix:
+    Type: String
+    Default: test/source-prefix/bursar_export_to_test
+  TargetBucket:
+    Type: String
+    Default: test-pickup-bucket
+  TargetPrefix:
+    Type: String
+    Default: test/target-prefix/bursar_file_ready_to_pickup
+
+Globals:
+  Function:
+    Timeout: 60
+    MemorySize: 256
+
+Resources:
+  BursarTransferFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Environment:
+        Variables:
+          WORKSPACE: !Ref Workspace
+          SOURCE_BUCKET: !Ref SourceBucket
+          SOURCE_PREFIX: !Ref SourcePrefix
+          TARGET_BUCKET: !Ref TargetBucket
+          TARGET_PREFIX: !Ref TargetPrefix
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !Ref SourceBucket
+        - S3WritePolicy:
+            BucketName: !Ref TargetBucket
+    Metadata:
+      DockerContext: ../../
+      Dockerfile: Dockerfile
