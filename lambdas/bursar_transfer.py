@@ -58,8 +58,7 @@ def get_key_from_job_id(s3_client: S3Client, bucket: str, prefix_with_job_id: st
         source_key = keys["Contents"][0]["Key"]
     except KeyError as error:
         message = (
-            f"No files retrieved from bucket '{bucket}'"
-            f"with prefix '{prefix_with_job_id}'"
+            f"No files retrieved from bucket '{bucket}'with prefix '{prefix_with_job_id}'"
         )
         raise KeyError(message) from error
 

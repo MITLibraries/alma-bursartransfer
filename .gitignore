@@ -99,6 +99,14 @@ __pypackages__/
 celerybeat-schedule
 celerybeat.pid
 
+# Container build artifacts
+.arch_tag
+.tool-versions
+
+# AWS SAM
+.aws-sam/
+tests/sam/env.json
+
 # SageMath parsed files
 *.sage.py
 
