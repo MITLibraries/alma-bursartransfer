@@ -38,6 +38,12 @@ Resources:
           SOURCE_PREFIX: !Ref SourcePrefix
           TARGET_BUCKET: !Ref TargetBucket
           TARGET_PREFIX: !Ref TargetPrefix
+          # declared (blank) so `sam local invoke --env-vars` can override it;
+          # SAM only lets env-vars override names already declared here.
+          # AWS_ACCESS_KEY_ID/SECRET/REGION are reserved Lambda names and
+          # cannot be declared here - SAM supplies those from your local
+          # AWS session (or its own defaults) regardless.
+          AWS_ENDPOINT_URL: ""
       Policies:
         - S3ReadPolicy:
             BucketName: !Ref SourceBucket

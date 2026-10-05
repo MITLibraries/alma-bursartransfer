@@ -71,36 +71,65 @@ bursar export is run. At MIT, the year used in the Fall `BILLINGTERM` should be 
 
 ## Local Testing
 
-<https://docs.aws.amazon.com/lambda/latest/dg/images-test.html>
+Local testing runs the Lambda via [SAM](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli.html)
+using the real Dockerfile, without touching real AWS resources.
 
-- Build the container:
-
-  ```bash
-  docker build -t bursar_transfer:latest .
-  ```
-
-- Run the default handler for the container
-  - Required environment variables and AWS credentials must be in `.env`.
-  - Make sure the buckets in your `.env` actually exist
+- Build the SAM image:
 
   ```bash
-  docker run --env-file .env -p 9000:8080 bursar_transfer:latest
+  make sam-build
   ```
 
-- Upload a sample bursar export .xml file to the `SOURCE_BUCKET` specified in
-  your `.env`. Rename the file and move to a different subfolder if necessary so
-  that the object key looks like `[SOURCE_PREFIX]-[job_id]-[timestamp].xml`
+- Invoke the lambda:
+
+  ```bash
+  make sam-invoke
+  ```
+
+  This starts a local [moto](https://github.com/getmoto/moto) mock S3 server,
+  seeds it with `tests/fixtures/test.xml` (see `tests/sam/seed_mock_s3.py`),
+  invokes the function against that mock via `tests/sam/env.mock.json`, and
+  tears the mock server down afterward. No AWS credentials are required and
+  no real bucket is touched.
+
+- Observe output:
+
+  ```
+  {"target_file": "test-pickup-bucket/test/target-prefix/bursar_file_ready_to_pickup-12345678-5678.csv",
+  "record_count": 10,
+  "total_charges": 579.72
+  }
+  ```
+
+### Testing against a real dev environment
+
+Occasionally (e.g. to verify the deployed dev Lambda's actual IAM/bucket
+permissions) you may want to invoke against real AWS resources instead of the
+mock. This requires active AWS CLI credentials (e.g. via SSO login) for the
+account/role that has access to the buckets you're testing against.
+
+- Populate `tests/sam/env.json` (gitignored, safe to edit locally) with real
+  values from the deployed dev Lambda's configuration:
+
+  ```bash
+  make sam-env
+  ```
+
+- Upload a sample bursar export .xml file to the real `SOURCE_BUCKET` set in
+  `tests/sam/env.json`. Rename the file and move to a different subfolder if
+  necessary so that the object key looks like `[SOURCE_PREFIX]-[job_id]-[timestamp].xml`
   - For example the object key could be `test/bursar/export-1234-5678.xml`
   - Note that the timestamp can be any string, it doesn't have to be a 'real'
     timestamp
   - You can use the fixture file in this repo `tests/fixtures/test.xml` as your
     sample file.
 
-- Post to the container, passing in the `job_id` from the object key you
-  created:
+- Invoke the lambda, passing in the `job_id` from the object key you created
+  (update the `job_id` in the `Makefile`'s `sam-invoke-live` target if it
+  differs from `12345678`):
 
   ```bash
-  curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{"job_id":"1234"}'
+  make sam-invoke-live
   ```
 
 - Observe output:
