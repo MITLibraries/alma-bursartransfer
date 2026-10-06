@@ -16,7 +16,7 @@ help: # preview Makefile commands
 
 # ensure OS binaries aren't called if naming conflict with Make recipes
 .PHONY: help install venv update test coveralls lint lint-fix security check-arch \
-	dist-dev publish-dev docker-clean sam-build sam-invoke sam-invoke-live sam-env \
+	dist-dev publish-dev docker-clean sam-build sam-invoke sam-env \
 	update-lambda-dev dist-stage publish-stage update-lambda-stage
 
 ##############################################
@@ -123,46 +123,19 @@ update-lambda-dev: # Updates the lambda with whatever is the most recent image i
 # SAM Lambda
 ####################################
 
+sam-env: # SAM: Populate tests/sam/env.json with real values from the deployed dev lambda
+	aws lambda get-function-configuration --function-name $(FUNCTION_DEV) \
+		--query '{BursarTransferFunction: Environment.Variables}' \
+		> tests/sam/env.json
+
 sam-build: # SAM: Build SAM image for running Lambda locally
 	sam build --template tests/sam/template.yaml
 
-sam-invoke: # SAM: Invoke lambda against a local mocked S3 (no real AWS calls)
-	# Step 1: start a local moto mock S3 server in the background (`&`),
-	#   bound to all interfaces (-H 0.0.0.0) so the SAM/Docker container can
-	#   reach it via host.docker.internal; its output is thrown away since
-	#   it's just a throwaway local mock. `sleep 2` gives it time to come up.
-	# Step 2: seed that mock (not real AWS) with the source/target buckets
-	#   and the sample fixture file - see tests/sam/seed_mock_s3.py.
-	# Step 3: invoke the built Lambda image via SAM with a test event piped
-	#   over stdin. tests/sam/env.mock.json sets AWS_ENDPOINT_URL so the
-	#   function's boto3 client talks to the mock server instead of real S3
-	#   (that var must also be declared, even blank, in template.yaml -
-	#   SAM only lets --env-vars override names already declared there).
-	# Step 4: capture the invoke's exit status, kill whatever is bound to
-	#   the mock server's port, then exit with the invoke's real status.
-	#   (A plain `pkill` matching on the moto_server command string also
-	#   matched this very shell script and killed itself mid-run, so we
-	#   target the port instead.)
-	# Note: every line below must end in `\` to stay one shell invocation -
-	#   that's how the background job/exit status survive across lines.
-	@uv run moto_server -H 0.0.0.0 -p 5099 >/tmp/moto_server.log 2>&1 & \
-	sleep 2; \
-	AWS_ENDPOINT_URL=http://127.0.0.1:5099 uv run python tests/sam/seed_mock_s3.py; \
-	echo '{"job_id":"12345678"}' \
-		| sam local invoke -e - --env-vars tests/sam/env.mock.json; \
-	STATUS=$$?; \
-	fuser -k 5099/tcp 2>/dev/null || true; \
-	exit $$STATUS
-
-sam-invoke-live: # SAM: Invoke lambda against real dev AWS resources (requires active AWS credentials)
-	echo '{"job_id":"12345678"}' \
+# default job id for sam-invoke
+JOB_ID ?= 12345678
+sam-invoke: # SAM: Invoke lambda against real dev AWS resources (requires active AWS credentials). Override job id with `make sam-invoke JOB_ID=1234`
+	echo '{"job_id":"$(JOB_ID)"}' \
 		| sam local invoke -e - --env-vars tests/sam/env.json
-
-sam-env: # SAM: Populate tests/sam/env.json with real values from the deployed dev lambda
-	aws lambda get-function-configuration --function-name $(FUNCTION_DEV) \
-		--query 'Environment.Variables' \
-		| python3 -c 'import json, sys; json.dump({"BursarTransferFunction": json.load(sys.stdin)}, sys.stdout, indent=2)' \
-		> tests/sam/env.json
 
 ### Manual shortcuts for deploying to Stage in an emergency. Requires        ###
 ###   ECR_NAME_STAGE, ECR_URL_STAGE, and FUNCTION_STAGE environment          ###

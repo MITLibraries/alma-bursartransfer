@@ -4,23 +4,6 @@ Description: >
   Local SAM testing template for the Alma bursar transfer Lambda.
   Not used for deployment; deploys are handled by the ECR/Terraform workflows.
 
-Parameters:
-  Workspace:
-    Type: String
-    Default: dev
-  SourceBucket:
-    Type: String
-    Default: test-alma-bucket
-  SourcePrefix:
-    Type: String
-    Default: test/source-prefix/bursar_export_to_test
-  TargetBucket:
-    Type: String
-    Default: test-pickup-bucket
-  TargetPrefix:
-    Type: String
-    Default: test/target-prefix/bursar_file_ready_to_pickup
-
 Globals:
   Function:
     Timeout: 60
@@ -32,23 +15,16 @@ Resources:
     Properties:
       PackageType: Image
       Environment:
+      # While tests/sam/env.json is required for sensitive env vars, ALL env vars
+      # used in the lambda must exist here as well, even just as "..." placeholders.
         Variables:
-          WORKSPACE: !Ref Workspace
-          SOURCE_BUCKET: !Ref SourceBucket
-          SOURCE_PREFIX: !Ref SourcePrefix
-          TARGET_BUCKET: !Ref TargetBucket
-          TARGET_PREFIX: !Ref TargetPrefix
-          # declared (blank) so `sam local invoke --env-vars` can override it;
-          # SAM only lets env-vars override names already declared here.
-          # AWS_ACCESS_KEY_ID/SECRET/REGION are reserved Lambda names and
-          # cannot be declared here - SAM supplies those from your local
-          # AWS session (or its own defaults) regardless.
-          AWS_ENDPOINT_URL: ""
-      Policies:
-        - S3ReadPolicy:
-            BucketName: !Ref SourceBucket
-        - S3WritePolicy:
-            BucketName: !Ref TargetBucket
+          WORKSPACE: ""
+          SOURCE_BUCKET: ""
+          SOURCE_PREFIX: ""
+          TARGET_BUCKET: ""
+          TARGET_PREFIX: ""
+          LOG_LEVEL: ""
+          SENTRY_DSN: ""
     Metadata:
       DockerContext: ../../
       Dockerfile: Dockerfile

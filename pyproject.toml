@@ -16,7 +16,7 @@ dependencies = [
 dev = [
   "coverage",
   "coveralls",
-  "moto[s3,server]",
+  "moto[s3]",
   "mypy",
   "pip-audit",
   "pre-commit",
