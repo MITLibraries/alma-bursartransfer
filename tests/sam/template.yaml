@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Local SAM testing template for the Alma bursar transfer Lambda.
+  Not used for deployment; deploys are handled by the ECR/Terraform workflows.
+
+Globals:
+  Function:
+    Timeout: 60
+    MemorySize: 256
+
+Resources:
+  BursarTransferFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      Environment:
+      # While tests/sam/env.json is required for sensitive env vars, ALL env vars
+      # used in the lambda must exist here as well, even just as "..." placeholders.
+        Variables:
+          WORKSPACE: ""
+          SOURCE_BUCKET: ""
+          SOURCE_PREFIX: ""
+          TARGET_BUCKET: ""
+          TARGET_PREFIX: ""
+          LOG_LEVEL: ""
+          SENTRY_DSN: ""
+    Metadata:
+      DockerContext: ../../
+      Dockerfile: Dockerfile

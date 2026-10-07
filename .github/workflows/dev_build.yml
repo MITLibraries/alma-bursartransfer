@@ -11,10 +11,14 @@ on:
     paths-ignore:
       - '.github/**'
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   deploy:
     name: Dev Container Deploy
-    uses: mitlibraries/.github/.github/workflows/ecr-shared-deploy-dev.yml@main
+    uses: mitlibraries/.github/.github/workflows/ecr-multi-arch-deploy-dev.yml@main
     secrets: inherit
     with:
       AWS_REGION: "us-east-1"

@@ -191,8 +191,7 @@ def test_lambda_handler_missing_workspace_env_raises_error(monkeypatch) -> None:
 
 def test_lambda_handler_success(event_data, caplog) -> None:
     csv_location = (
-        "test-pickup-bucket/test/target-prefix/"
-        "bursar_file_ready_to_pickup-1234-5678.csv"
+        "test-pickup-bucket/test/target-prefix/bursar_file_ready_to_pickup-1234-5678.csv"
     )
     with caplog.at_level(logging.DEBUG, logger="lambdas.bursar_transfer"):
         response = bursar_transfer.lambda_handler(event_data, {})
